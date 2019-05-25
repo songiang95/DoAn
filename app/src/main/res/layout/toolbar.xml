@@ -11,15 +11,33 @@
     app:layout_scrollFlags="scroll|enterAlways|snap">
 
     <Spinner
-        android:gravity="center"
         android:id="@+id/tb_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:entries="@array/comic_type"
-        android:dropDownWidth="200dp"
-        android:popupBackground="@color/black_opacity_80"
         android:backgroundTint="@color/white"
-        />
+        android:dropDownWidth="200dp"
+        android:entries="@array/comic_type"
+        android:gravity="center"
+        android:popupBackground="@color/black_opacity_80" />
+
+    <EditText
+        android:id="@+id/edt_search"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/search_bg"
+        android:backgroundTint="@android:color/transparent"
+        android:hint="@string/search_hint"
+        android:imeOptions="actionSearch"
+        android:inputType="text"
+        android:maxLines="1"
+        android:paddingStart="15dp"
+        android:textColor="@color/white"
+        android:textColorHint="#606060"
+        android:textCursorDrawable="@drawable/white_cursor"
+        android:textSize="14sp"
+        android:visibility="gone" />
 
 
 </androidx.appcompat.widget.Toolbar>

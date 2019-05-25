@@ -25,40 +25,14 @@
             <include layout="@layout/toolbar" />
         </com.google.android.material.appbar.AppBarLayout>
 
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycle_manga_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginLeft="@dimen/margin_main_recycle"
-            android:layout_marginRight="@dimen/margin_main_recycle"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
             android:layout_weight="1"
-            android:orientation="vertical">
-
-            <EditText
-                android:id="@+id/edt_search"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/search_bg"
-                android:backgroundTint="@android:color/transparent"
-                android:hint="@string/search_hint"
-                android:imeOptions="actionSearch"
-                android:inputType="text"
-                android:maxLines="1"
-                android:textColor="@color/white"
-                android:textColorHint="#606060"
-                android:textCursorDrawable="@drawable/white_cursor"
-                android:textSize="14sp"
-                android:visibility="gone" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycle_manga_list"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
-
-        </LinearLayout>
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
         <include
             layout="@layout/bottom_toolbar"

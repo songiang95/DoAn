@@ -60,6 +60,7 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
     EditText edtSearch;
     @BindView(R.id.main_bg)
     CoordinatorLayout mainBg;
+
     private SlidingRootNav mSlidingBar;
     private MainContract.IPresenter mPresenter;
     private ComicAdapter mAdapter;
@@ -89,11 +90,12 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
 
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
-        mainBg.setBackgroundResource(R.drawable.navigation_bg);
+        if (edtSearch.getVisibility() == View.GONE)
+            mSpinner.setVisibility(View.VISIBLE);
+
     }
 
     private void initLoadMoreListener() {
@@ -277,8 +279,8 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
     @OnClick(R.id.toolbar_search)
     public void onClickSearch() {
         if (edtSearch.getVisibility() == View.GONE) {
+            mSpinner.setVisibility(View.GONE);
             edtSearch.setVisibility(View.VISIBLE);
-            mainBg.setBackgroundResource(R.drawable.main_bg_trigger_search);
             Utils.showKeyboard(this);
             edtSearch.requestFocus();
             edtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -308,11 +310,10 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         Utils.hideKeyboard(this);
-        if(edtSearch.getVisibility()==View.VISIBLE)
-        {
+        if (edtSearch.getVisibility() == View.VISIBLE) {
             edtSearch.setVisibility(View.GONE);
+            mSpinner.setVisibility(View.VISIBLE);
         }
-        mainBg.setBackgroundResource(R.drawable.navigation_bg);
         return super.dispatchTouchEvent(ev);
     }
 

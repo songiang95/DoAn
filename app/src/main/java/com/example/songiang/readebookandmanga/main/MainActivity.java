@@ -7,17 +7,25 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
+import com.example.songiang.readebookandmanga.search.SearchActivity;
+import com.example.songiang.readebookandmanga.utils.Utils;
 import com.google.android.material.appbar.AppBarLayout;
 
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.songiang.readebookandmanga.R;
@@ -26,6 +34,7 @@ import com.example.songiang.readebookandmanga.adapter.ComicAdapter;
 import com.example.songiang.readebookandmanga.detail.DetailActivity;
 import com.example.songiang.readebookandmanga.model.Comic;
 import com.example.songiang.readebookandmanga.utils.Constant;
+import com.yarolegovich.slidingrootnav.SlidingRootNav;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
 
 import java.util.List;
@@ -37,7 +46,7 @@ import butterknife.OnClick;
 public class MainActivity extends BaseActivity implements MainContract.IView, ComicAdapter.OnItemClickListener {
 
     public static final String EXTRA_COMIC = "comic";
-
+    public static final String EXTRA_SEARCH_QUERY = "search";
     @BindView(R.id.toolbar_top)
     AppBarLayout toolbarTop;
     @BindView(R.id.recycle_manga_list)
@@ -47,8 +56,11 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
     ProgressBar pbLoading;
     @BindView(R.id.tb_spinner)
     Spinner mSpinner;
-
-    private SlidingRootNavBuilder mSlidingBar;
+    @BindView(R.id.edt_search)
+    EditText edtSearch;
+    @BindView(R.id.main_bg)
+    CoordinatorLayout mainBg;
+    private SlidingRootNav mSlidingBar;
     private MainContract.IPresenter mPresenter;
     private ComicAdapter mAdapter;
     private GridLayoutManager gridLayoutManager;
@@ -69,7 +81,7 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
         }
 
         initSpinnerListener();
-        initLoadmorListner();
+        initLoadMoreListener();
         mPresenter = new Presenter();
         mPresenter.attachView(this);
         mPresenter.load(MANGA_URL);
@@ -78,7 +90,13 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
     }
 
 
-    private void initLoadmorListner() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mainBg.setBackgroundResource(R.drawable.navigation_bg);
+    }
+
+    private void initLoadMoreListener() {
         mRecycleView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -107,7 +125,7 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
                     isLoading = false;
                     mPageIndex++;
                     String pageIndex = "page/" + mPageIndex + "/";
-                    mPresenter.loadMore(MANGA_URL + pageIndex);
+                    mPresenter.load(MANGA_URL + pageIndex);
 
                 }
             }
@@ -193,20 +211,12 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
     }
 
     private void initNavigation() {
-        new SlidingRootNavBuilder(this)
+        mSlidingBar = new SlidingRootNavBuilder(this)
                 .withMenuLayout(R.layout.navigation_drawer)
                 .withDragDistance(140) //Horizontal translation of a view. Default == 180dp
                 .withRootViewScale(0.7f) //Content view's scale will be interpolated between 1f and 0.7f. Default == 0.65f;
                 .inject();
     }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d("affa", "onDestroy: main ");
-    }
-
 
     @Override
     public void showContent(List<Comic> listData) {
@@ -238,6 +248,11 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
         pbLoading.setVisibility(View.GONE);
     }
 
+    @Override
+    public void showToastLastPage() {
+        Toast.makeText(this, "Bạn đã ở cuối trang!", Toast.LENGTH_SHORT).show();
+    }
+
 
     @Override
     public void onItemClick(View v, Comic comic) {
@@ -252,6 +267,67 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
 
     @OnClick(R.id.toolbar_nav)
     public void onClickNav() {
+        if (mSlidingBar.isMenuClosed()) {
+            mSlidingBar.openMenu();
+        } else {
+            mSlidingBar.closeMenu();
+        }
     }
 
+    @OnClick(R.id.toolbar_search)
+    public void onClickSearch() {
+        if (edtSearch.getVisibility() == View.GONE) {
+            edtSearch.setVisibility(View.VISIBLE);
+            mainBg.setBackgroundResource(R.drawable.main_bg_trigger_search);
+            Utils.showKeyboard(this);
+            edtSearch.requestFocus();
+            edtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                        performSearch();
+                        return true;
+                    }
+                    return false;
+                }
+            });
+        } else {
+            edtSearch.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (edtSearch.getVisibility() == View.VISIBLE) {
+            edtSearch.setVisibility(View.GONE);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        Utils.hideKeyboard(this);
+        if(edtSearch.getVisibility()==View.VISIBLE)
+        {
+            edtSearch.setVisibility(View.GONE);
+        }
+        mainBg.setBackgroundResource(R.drawable.navigation_bg);
+        return super.dispatchTouchEvent(ev);
+    }
+
+    private void performSearch() {
+
+        String searchQuery = edtSearch.getText().toString();
+        if (!searchQuery.equals("")) {
+            Utils.hideKeyboard(this);
+            edtSearch.setText("");
+            edtSearch.setVisibility(View.GONE);
+            Intent intent = new Intent(this, SearchActivity.class);
+            intent.putExtra(EXTRA_SEARCH_QUERY, searchQuery);
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "Bạn cần nhập truyện cần tìm!", Toast.LENGTH_LONG).show();
+        }
+    }
 }

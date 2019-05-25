@@ -11,6 +11,7 @@ public interface MainContract {
         void hideContent();
         void showProgress();
         void hideProgress();
+        void showToastLastPage();
 
     }
 

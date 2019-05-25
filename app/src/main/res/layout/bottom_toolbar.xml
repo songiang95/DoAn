@@ -10,6 +10,7 @@
     >
 
     <ImageView
+        android:background="@drawable/ripple_toolbar_item"
         android:layout_gravity="center_vertical"
         android:src="@drawable/ic_menu_black_24dp"
         android:id="@+id/toolbar_nav"
@@ -20,7 +21,7 @@
         
         />
     <ImageView
-       
+        android:background="@drawable/ripple_toolbar_item"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/toolbar_search"
@@ -31,6 +32,7 @@
         />
 
     <ImageView
+        android:background="@drawable/ripple_toolbar_item"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/toolbar_home"
@@ -39,6 +41,7 @@
         android:padding="@dimen/toolbar_item_padding"
         />
     <ImageView
+        android:background="@drawable/ripple_toolbar_item"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/toolbar_change_mode"
@@ -48,6 +51,7 @@
 
         />
     <ImageView
+        android:background="@drawable/ripple_toolbar_item"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/toolbar_favorite"

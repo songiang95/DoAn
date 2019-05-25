@@ -138,6 +138,7 @@
     </androidx.core.widget.NestedScrollView>
 
     <ProgressBar
+        android:indeterminateDrawable="@drawable/progress_loading"
         android:id="@+id/pb_loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

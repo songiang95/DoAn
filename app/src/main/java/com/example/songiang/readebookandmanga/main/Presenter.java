@@ -1,20 +1,17 @@
 package com.example.songiang.readebookandmanga.main;
 
-import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.example.songiang.readebookandmanga.model.Comic;
-
-import org.jsoup.HttpStatusException;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import com.example.songiang.readebookandmanga.utils.DownloadMangaTask;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Presenter implements MainContract.IPresenter {
+public class Presenter implements MainContract.IPresenter, DownloadMangaTask.DownloadMangaCallback {
 
+    private final String TAG = this.getClass().getSimpleName();
     private MainContract.IView mView;
     private List<Comic> listData;
     private boolean isLastPage = false;
@@ -30,10 +27,12 @@ public class Presenter implements MainContract.IPresenter {
     }
 
 
-
     @Override
     public void load(String url) {
-        new DownloadMainTask().execute(url);
+        if (!isLastPage) {
+            mView.showProgress();
+            new DownloadMangaTask(listData, this).execute(url);
+        }
     }
 
     @Override
@@ -53,69 +52,19 @@ public class Presenter implements MainContract.IPresenter {
         mView = v;
     }
 
+    @Override
+    public void onFinishDownload(List<Comic> data) {
+        mView.hideProgress();
+        if (data != null)
+            mView.showContent(data);
+        else
+            Log.e(TAG, "onFinishDownload: data is null");
 
-    public class DownloadMainTask extends AsyncTask<String, Void, List<Comic>> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mView.showProgress();
-        }
-
-        @Override
-        protected List doInBackground(String... strings) {
-
-
-            try {
-                Document doc = Jsoup.connect(strings[0]).get();
-                if (doc!=null) {
-                    Elements elements = doc.select("div.update_item");
-                    for (Element sub : elements) {
-                        Comic temp = new Comic();
-                        Element urlSub = sub.getElementsByTag("a").first();
-                        Element imgSub = sub.getElementsByTag("img").first();
-                        if (urlSub != null) {
-                            String url = "";
-                            String title = urlSub.attr("title");
-                            url = url + urlSub.attr("href");
-                            temp.setDetailUrl(url);
-                            temp.setName(title);
-                        }
-                        if (imgSub != null) {
-                            String img = imgSub.attr("src");
-                            if (img.contains("61x61")) {
-                                img = img.replace("-61x61", "");
-                            } else {
-                                if (img.contains("jpg")) {
-                                    img = img.substring(0, img.length() - 11) + ".jpg";
-                                }
-                                else if(img.contains("png")) {
-                                    img = img.substring(0, img.length() - 11) + ".png";
-                                }
-                            }
-                            temp.setImage(img);
-
-
-                        }
-                        listData.add(temp);
-                    }
-                }
-            } catch (HttpStatusException e) {
-                isLastPage = true;
-                e.printStackTrace();
-            }catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-
-            return listData;
-        }
-
-        @Override
-        protected void onPostExecute(List<Comic> comics) {
-            super.onPostExecute(comics);
-            mView.hideProgress();
-            mView.showContent(comics);
-        }
     }
+
+    @Override
+    public void isLastPage(boolean bool) {
+        isLastPage = bool;
+    }
+
 }

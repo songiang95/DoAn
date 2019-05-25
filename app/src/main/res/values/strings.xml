@@ -9,6 +9,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="nav_item_ebook">Đọc Sách</string>
+    <string name="search_hint">Nhập tên truyện</string>
 
     <string-array name="comic_type">
         <item>Mới cập nhập</item>

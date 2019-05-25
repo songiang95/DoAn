@@ -1,10 +1,14 @@
 package com.example.songiang.readebookandmanga.detail;
 
 import android.content.Intent;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
+
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -44,6 +48,7 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
     private List<String> listChap;
     private DetailContract.IPresenter mPresenter;
     public static final String EXTRA_URL = "url";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +75,7 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
         tvTitle.setText(comic.getName());
         tvAuthor.setText(comic.getArtist());
         Glide.with(this).load(comic.getImage()).into(ivCover);
-        ChapterAdapter chapterAdapter = new ChapterAdapter(listChap,this);
+        ChapterAdapter chapterAdapter = new ChapterAdapter(listChap, this);
         recyclerView.setAdapter(chapterAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 5));
@@ -96,19 +101,17 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
 
 
     @OnClick(R.id.tv_read_continue)
-    public void onClickReadContinue()
-    { }
+    public void onClickReadContinue() {
+    }
 
     @Override
     public void onItemClick(View v, String url) {
-        if (url!=null) {
+        if (url != null) {
             Intent intent = new Intent(this, ReadComicActivity.class);
-            intent.putExtra(EXTRA_URL,url);
+            intent.putExtra(EXTRA_URL, url);
             startActivity(intent);
-        }
-        else
-        {
-            Toast.makeText(this,"Error",Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
         }
     }
 }

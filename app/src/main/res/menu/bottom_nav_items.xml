@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/bottom_nav_farvorite"
+        android:title="@string/nav_farvorite"
+        android:icon="@drawable/ic_favorite_black_24dp"
+
+        />
+    <item android:id="@+id/bottom_nav_change_server"
+        android:title="@string/nav_change_server"
+        android:icon="@drawable/ic_cloud_black_24dp"
+        />
+    <item android:id="@+id/bottom_nav_news"
+        android:title="@string/nav_news"
+        android:icon="@drawable/ic_fiber_new_black_24dp"
+        />
+</menu>

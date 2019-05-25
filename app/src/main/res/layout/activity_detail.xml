@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/navigation_bg"
+    tools:context=".detail.DetailActivity">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_marginBottom="48dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_comic_title"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="24dp"
+                android:background="@color/black_opacity_50"
+                android:gravity="center"
+                android:maxLines="2"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/rl_top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_comic_title"
+                android:orientation="horizontal"
+                android:paddingStart="10dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="10dp">
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/iv_detail_cover"
+                    android:layout_width="0dp"
+                    android:layout_height="160dp"
+                    android:layout_weight="1"
+                    app:riv_corner_radius="5dp"
+                    app:riv_border_color="#c0c0c0"
+                    app:riv_border_width="2dp"
+                    android:scaleType="fitCenter"
+
+                    />
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="2">
+
+
+                    <TextView
+                        android:id="@+id/tv_author"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="30dp"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_below="@id/tv_author"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginTop="20dp"
+                        android:orientation="horizontal"
+                        android:paddingTop="50dp"
+                        android:paddingBottom="0dp">
+
+
+                        <TextView
+                            android:id="@+id/tv_read_continue"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="2dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_read_first_bg"
+                            android:gravity="center"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+
+                        <ImageView
+                            android:id="@+id/iv_favorite"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="1dp"
+                            android:layout_marginEnd="1dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_read_first_bg"
+                            android:padding="10dp"
+                            android:src="@drawable/ic_favorite_black_24dp" />
+
+
+                        <ImageView
+                            android:id="@+id/iv_download"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="2dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_read_first_bg"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_file_download_black_24dp" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+
+                android:id="@+id/recycle_chap_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/rl_top"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="?actionBarSize"
+                android:nestedScrollingEnabled="false">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+
+        </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone" />
+
+    <include layout="@layout/bottom_toolbar" />
+
+</RelativeLayout>

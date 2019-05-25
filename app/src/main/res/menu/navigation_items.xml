@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/nav_farvorite"
+        android:title="@string/nav_farvorite"/>
+    <item android:id="@+id/nav_change_server"
+        android:title="@string/nav_change_server"
+        />
+</menu>

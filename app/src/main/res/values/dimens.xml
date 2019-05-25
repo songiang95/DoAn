@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<dimen name="nav_item_width">210dp</dimen>
+    <dimen name="nav_item_height">70dp</dimen>
+    <dimen name="nav_item_icon_width">18dp</dimen>
+    <dimen name="textsize_16sp">16sp</dimen>
+    <dimen name="nav_item_margin_start">25dp</dimen>
+    <dimen name="nav_item_tv_margin_left">25dp</dimen>
+    <dimen name="bottom_toolbar">48dp</dimen>
+    <dimen name="margin_left_16dp">16dp</dimen>
+    <dimen name="margin_recycle_top">80dp</dimen>
+    <dimen name="toolbar_item_width">40dp</dimen>
+    <dimen name="margin_main_recycle">5dp</dimen>
+    <dimen name="toolbar_item_padding">12dp</dimen>
+
+</resources>

@@ -1,6 +1,5 @@
-package com.example.songiang.readebookandmanga.main;
+package com.example.songiang.readebookandmanga.comic.main;
 
-import com.example.songiang.readebookandmanga.BasePresenter;
 import com.example.songiang.readebookandmanga.model.Comic;
 
 import java.util.List;

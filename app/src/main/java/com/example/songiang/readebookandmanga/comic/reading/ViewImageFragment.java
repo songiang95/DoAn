@@ -1,4 +1,4 @@
-package com.example.songiang.readebookandmanga.reading;
+package com.example.songiang.readebookandmanga.comic.reading;
 
 
 import android.os.Bundle;

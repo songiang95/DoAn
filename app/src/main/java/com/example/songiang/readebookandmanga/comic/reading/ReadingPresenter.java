@@ -1,11 +1,10 @@
-package com.example.songiang.readebookandmanga.reading;
+package com.example.songiang.readebookandmanga.comic.reading;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;

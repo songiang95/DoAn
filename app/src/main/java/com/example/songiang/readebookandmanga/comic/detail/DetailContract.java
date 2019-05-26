@@ -1,6 +1,5 @@
-package com.example.songiang.readebookandmanga.detail;
+package com.example.songiang.readebookandmanga.comic.detail;
 
-import com.example.songiang.readebookandmanga.BasePresenter;
 import com.example.songiang.readebookandmanga.model.Comic;
 
 public interface DetailContract {

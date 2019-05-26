@@ -1,7 +1,4 @@
-package com.example.songiang.readebookandmanga.reading;
-
-import com.example.songiang.readebookandmanga.detail.DetailContract;
-import com.example.songiang.readebookandmanga.model.Comic;
+package com.example.songiang.readebookandmanga.comic.reading;
 
 import java.util.List;
 

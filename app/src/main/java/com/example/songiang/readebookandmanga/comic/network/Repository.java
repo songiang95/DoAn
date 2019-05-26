@@ -1,6 +1,6 @@
-package com.example.songiang.readebookandmanga.network;
+package com.example.songiang.readebookandmanga.comic.network;
 
-import com.example.songiang.readebookandmanga.main.MainContract;
+import com.example.songiang.readebookandmanga.comic.main.MainContract;
 import com.example.songiang.readebookandmanga.model.Comic;
 
 import java.util.List;

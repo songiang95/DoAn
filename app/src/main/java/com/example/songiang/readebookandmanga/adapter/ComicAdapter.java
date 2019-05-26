@@ -18,6 +18,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.MyViewHolder> {
 
@@ -34,9 +35,7 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.MyViewHolder
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-
-        Context context = viewGroup.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
         View v = inflater.inflate(R.layout.layout_comic_item, viewGroup, false);
         return new MyViewHolder(v);
     }
@@ -75,6 +74,7 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.MyViewHolder
                 listener.onItemClick(v, data.get(getAdapterPosition()));
             }
         }
+
     }
 
     public interface OnItemClickListener{

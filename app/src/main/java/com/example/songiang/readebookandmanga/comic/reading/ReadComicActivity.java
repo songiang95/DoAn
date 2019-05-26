@@ -1,8 +1,7 @@
-package com.example.songiang.readebookandmanga.reading;
+package com.example.songiang.readebookandmanga.comic.reading;
 
 import android.content.Intent;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.PagerAdapter;
@@ -10,12 +9,10 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.example.songiang.readebookandmanga.R;
 import com.example.songiang.readebookandmanga.adapter.MyPagerAdapter;
-import com.example.songiang.readebookandmanga.detail.DetailActivity;
+import com.example.songiang.readebookandmanga.comic.detail.DetailActivity;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;

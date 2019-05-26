@@ -1,4 +1,4 @@
-package com.example.songiang.readebookandmanga.detail;
+package com.example.songiang.readebookandmanga.comic.detail;
 
 import android.content.Intent;
 
@@ -17,9 +17,9 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.songiang.readebookandmanga.R;
 import com.example.songiang.readebookandmanga.adapter.ChapterAdapter;
-import com.example.songiang.readebookandmanga.main.MainActivity;
+import com.example.songiang.readebookandmanga.comic.main.MainActivity;
 import com.example.songiang.readebookandmanga.model.Comic;
-import com.example.songiang.readebookandmanga.reading.ReadComicActivity;
+import com.example.songiang.readebookandmanga.comic.reading.ReadComicActivity;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;

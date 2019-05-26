@@ -1,4 +1,4 @@
-package com.example.songiang.readebookandmanga.main;
+package com.example.songiang.readebookandmanga.comic.main;
 
 
 import android.content.Intent;
@@ -7,8 +7,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
-import com.bumptech.glide.Glide;
-import com.example.songiang.readebookandmanga.search.SearchActivity;
+import com.example.songiang.readebookandmanga.comic.search.SearchActivity;
+import com.example.songiang.readebookandmanga.ebook.main.MainEbookActivity;
 import com.example.songiang.readebookandmanga.utils.Utils;
 import com.google.android.material.appbar.AppBarLayout;
 
@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -29,9 +30,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.songiang.readebookandmanga.R;
-import com.example.songiang.readebookandmanga.View.BaseActivity;
+import com.example.songiang.readebookandmanga.comic.View.BaseActivity;
 import com.example.songiang.readebookandmanga.adapter.ComicAdapter;
-import com.example.songiang.readebookandmanga.detail.DetailActivity;
+import com.example.songiang.readebookandmanga.comic.detail.DetailActivity;
 import com.example.songiang.readebookandmanga.model.Comic;
 import com.example.songiang.readebookandmanga.utils.Constant;
 import com.yarolegovich.slidingrootnav.SlidingRootNav;
@@ -136,6 +137,9 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
 
     private void initSpinnerListener() {
         mSpinner.setDropDownVerticalOffset(100);
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this,R.array.comic_type,android.R.layout.simple_spinner_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(spinnerAdapter);
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -298,10 +302,17 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
         }
     }
 
+    @OnClick(R.id.toolbar_change_mode)
+    public void onClickChangeMode()
+    {
+        startActivity(new Intent(this, MainEbookActivity.class));
+    }
+
     @Override
     public void onBackPressed() {
         if (edtSearch.getVisibility() == View.VISIBLE) {
             edtSearch.setVisibility(View.GONE);
+            mSpinner.setVisibility(View.VISIBLE);
         } else {
             super.onBackPressed();
         }

@@ -1,7 +1,6 @@
-package com.example.songiang.readebookandmanga.main;
+package com.example.songiang.readebookandmanga.comic.main;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.songiang.readebookandmanga.model.Comic;
 import com.example.songiang.readebookandmanga.utils.DownloadMangaTask;

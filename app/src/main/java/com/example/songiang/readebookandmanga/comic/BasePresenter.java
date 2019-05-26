@@ -1,8 +1,6 @@
-package com.example.songiang.readebookandmanga;
+package com.example.songiang.readebookandmanga.comic;
 
 import android.view.View;
-
-import com.example.songiang.readebookandmanga.main.MainContract;
 
 public interface BasePresenter {
 

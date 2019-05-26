@@ -1,20 +1,14 @@
-package com.example.songiang.readebookandmanga.detail;
+package com.example.songiang.readebookandmanga.comic.detail;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
 
-import com.example.songiang.readebookandmanga.main.MainContract;
-import com.example.songiang.readebookandmanga.main.Presenter;
 import com.example.songiang.readebookandmanga.model.Comic;
 
-import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
-import java.util.List;
 
 public class DetailPresenter implements DetailContract.IPresenter {
 

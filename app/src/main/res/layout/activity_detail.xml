@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/navigation_bg"
-    tools:context=".detail.DetailActivity">
+    tools:context=".comic.detail.DetailActivity">
 
     <androidx.core.widget.NestedScrollView
         android:layout_marginBottom="48dp"
@@ -85,7 +85,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginEnd="2dp"
                             android:layout_weight="1"
-                            android:background="@drawable/btn_read_first_bg"
+                            android:background="@drawable/ripple_chap_item"
                             android:gravity="center"
                             android:textColor="@color/white"
                             android:textSize="16sp" />
@@ -98,7 +98,7 @@
                             android:layout_marginStart="1dp"
                             android:layout_marginEnd="1dp"
                             android:layout_weight="1"
-                            android:background="@drawable/btn_read_first_bg"
+                            android:background="@drawable/ripple_chap_item"
                             android:padding="10dp"
                             android:src="@drawable/ic_favorite_black_24dp" />
 
@@ -109,7 +109,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="2dp"
                             android:layout_weight="1"
-                            android:background="@drawable/btn_read_first_bg"
+                            android:background="@drawable/ripple_chap_item"
                             android:padding="8dp"
                             android:src="@drawable/ic_file_download_black_24dp" />
 

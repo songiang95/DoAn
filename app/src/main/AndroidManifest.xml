@@ -12,10 +12,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoTitleBar">
-        <activity android:name=".search.SearchActivity"></activity>
-        <activity android:name=".reading.ReadComicActivity" />
-        <activity android:name=".detail.DetailActivity" />
-        <activity android:name=".main.MainActivity">
+        <activity android:name=".ebook.main.MainEbookActivity"></activity>
+        <activity android:name=".comic.search.SearchActivity" />
+        <activity android:name=".comic.reading.ReadComicActivity" />
+        <activity android:name=".comic.detail.DetailActivity" />
+        <activity android:name=".comic.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

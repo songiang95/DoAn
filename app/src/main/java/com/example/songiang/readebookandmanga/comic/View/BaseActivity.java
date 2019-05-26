@@ -1,4 +1,4 @@
-package com.example.songiang.readebookandmanga.View;
+package com.example.songiang.readebookandmanga.comic.View;
 
 
 import androidx.appcompat.app.AppCompatActivity;

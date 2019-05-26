@@ -2,7 +2,6 @@ package com.example.songiang.readebookandmanga.utils;
 
 import android.os.AsyncTask;
 
-import com.example.songiang.readebookandmanga.main.Presenter;
 import com.example.songiang.readebookandmanga.model.Comic;
 
 import org.jsoup.HttpStatusException;
@@ -11,7 +10,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DownloadMangaTask extends AsyncTask<String, Void, Void> {

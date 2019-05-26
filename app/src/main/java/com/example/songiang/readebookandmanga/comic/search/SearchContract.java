@@ -1,4 +1,4 @@
-package com.example.songiang.readebookandmanga.search;
+package com.example.songiang.readebookandmanga.comic.search;
 
 import com.example.songiang.readebookandmanga.model.Comic;
 

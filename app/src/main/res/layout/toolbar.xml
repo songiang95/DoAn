@@ -16,7 +16,6 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/white"
         android:dropDownWidth="200dp"
-        android:entries="@array/comic_type"
         android:gravity="center"
         android:popupBackground="@color/black_opacity_80" />
 

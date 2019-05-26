@@ -1,4 +1,4 @@
-package com.example.songiang.readebookandmanga.search;
+package com.example.songiang.readebookandmanga.comic.search;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ProgressBar;
@@ -16,10 +15,9 @@ import android.widget.Toast;
 
 import com.example.songiang.readebookandmanga.R;
 import com.example.songiang.readebookandmanga.adapter.ComicAdapter;
-import com.example.songiang.readebookandmanga.detail.DetailActivity;
-import com.example.songiang.readebookandmanga.main.MainActivity;
+import com.example.songiang.readebookandmanga.comic.detail.DetailActivity;
+import com.example.songiang.readebookandmanga.comic.main.MainActivity;
 import com.example.songiang.readebookandmanga.model.Comic;
-import com.example.songiang.readebookandmanga.utils.Utils;
 
 import java.util.List;
 
@@ -53,7 +51,7 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
         mPresenter.attachView(this);
         Intent receiveIntent = getIntent();
         searchQuery = receiveIntent.getStringExtra(MainActivity.EXTRA_SEARCH_QUERY);
-        tvSearchQuery.setText(searchQuery);
+
         searchUrl = searchUrl + searchQuery;
         mPresenter.load(searchUrl);
         initLoadMoreListener();
@@ -70,6 +68,11 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
             gridLayoutManager = new GridLayoutManager(this, 3);
             rcSearch.setLayoutManager(gridLayoutManager);
             rcSearch.setHasFixedSize(true);
+            if (list.size() == 0) {
+                tvSearchQuery.setText("Không tìm được truyện");
+            } else {
+                tvSearchQuery.setText(searchQuery);
+            }
         } else {
             mAdapter.notifyDataSetChanged();
         }

@@ -1,10 +1,8 @@
 package com.example.songiang.readebookandmanga.model;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class Comic implements Serializable {
 

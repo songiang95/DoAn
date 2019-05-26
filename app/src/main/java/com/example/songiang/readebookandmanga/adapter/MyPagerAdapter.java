@@ -6,9 +6,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.example.songiang.readebookandmanga.reading.ViewImageFragment;
+import com.example.songiang.readebookandmanga.comic.reading.ViewImageFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MyPagerAdapter extends FragmentStatePagerAdapter {

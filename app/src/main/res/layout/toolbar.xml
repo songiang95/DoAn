@@ -17,7 +17,7 @@
         android:backgroundTint="@color/white"
         android:dropDownWidth="200dp"
         android:gravity="center"
-        android:popupBackground="@color/black_opacity_80" />
+        android:popupBackground="@color/white" />
 
     <EditText
         android:id="@+id/edt_search"

@@ -42,7 +42,6 @@ public class Presenter implements MainContract.IPresenter, DownloadMangaTask.Dow
     @Override
     public void reLoad(String url) {
         listData.clear();
-        isLastPage = false;
         load(url);
     }
 

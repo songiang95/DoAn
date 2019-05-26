@@ -17,6 +17,8 @@ public interface MainConstract {
         void load(String url);
         void attachView(IView v);
         void detachView();
+
+        void reLoad(String url);
     }
 
 }

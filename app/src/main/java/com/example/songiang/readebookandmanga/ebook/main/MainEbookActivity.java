@@ -1,39 +1,82 @@
 package com.example.songiang.readebookandmanga.ebook.main;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.songiang.readebookandmanga.R;
 import com.example.songiang.readebookandmanga.adapter.EbookAdapter;
+import com.example.songiang.readebookandmanga.comic.main.MainActivity;
+import com.example.songiang.readebookandmanga.comic.search.SearchActivity;
 import com.example.songiang.readebookandmanga.model.Ebook;
+import com.example.songiang.readebookandmanga.utils.Constant;
+import com.example.songiang.readebookandmanga.utils.Utils;
+import com.google.android.material.appbar.AppBarLayout;
+import com.yarolegovich.slidingrootnav.SlidingRootNav;
+import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainEbookActivity extends AppCompatActivity implements MainConstract.IView {
 
+    private static final String EXTRA_SEARCH_QUERY = "search query";
+    private String EBOOK_URL;
     @BindView(R.id.rc_ebook)
     RecyclerView mRcEbook;
     @BindView(R.id.pb_loading)
     ProgressBar pbLoading;
+    @BindView(R.id.tb_spinner)
+    Spinner mSpinner;
+    @BindView(R.id.edt_search)
+    EditText edtSearch;
     private boolean isLoaded;
     private EbookAdapter mAdapter;
     private MainPresenter mPresenter;
+    private SlidingRootNav mSlidingBar;
+    private int mPageIndex = 1;
+    private boolean isLoading = true;
+    private LinearLayoutManager linearLayoutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_ebook);
         ButterKnife.bind(this);
+        initNavigation();
+        initSpinnerListener();
+        initLoadMoreListener();
         mPresenter = new MainPresenter();
         mPresenter.attachView(this);
         mPresenter.load("https://sachvui.com/the-loai/tam-ly-ky-nang-song.html");
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (edtSearch.getVisibility() == View.GONE)
+            mSpinner.setVisibility(View.VISIBLE);
+
     }
 
     @Override
@@ -42,20 +85,268 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
             isLoaded = true;
             mAdapter = new EbookAdapter(this, data);
             mRcEbook.setAdapter(mAdapter);
-            mRcEbook.setLayoutManager(new LinearLayoutManager(this));
-        }
-        else{
+            linearLayoutManager = new LinearLayoutManager(this);
+            mRcEbook.setLayoutManager(linearLayoutManager);
+        } else {
             mAdapter.notifyDataSetChanged();
         }
     }
 
+    private void initSpinnerListener() {
+        mSpinner.setDropDownVerticalOffset(100);
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.ebook_type, R.layout.layout_spinner_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(spinnerAdapter);
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        EBOOK_URL = Constant.EBOOK_TIEUTHUYET;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    case 1:
+                        EBOOK_URL = Constant.EBOOK_TAMLY;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    case 2:
+                        EBOOK_URL = Constant.EBOOK_KINHTE;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    case 3:
+                        EBOOK_URL = Constant.EBOOK_MARKETING;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    case 4:
+                        EBOOK_URL = Constant.EBOOK_YHOC;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    case 5:
+                        EBOOK_URL = Constant.EBOOK_NGOAINGU;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    case 6:
+                        EBOOK_URL = Constant.EBOOK_KHOAHOC;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    case 7:
+                        EBOOK_URL = Constant.EBOOK_NGHETHUAT;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    case 8:
+                        EBOOK_URL = Constant.EBOOK_TRINHTHAM;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    case 9:
+                        EBOOK_URL = Constant.EBOOK_TONGIAO;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    case 10:
+                        EBOOK_URL = Constant.EBOOK_TUVI;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    case 11:
+                        EBOOK_URL = Constant.EBOOK_LICHSU;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    case 12:
+                        EBOOK_URL = Constant.EBOOK_VIETNAM;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    case 13:
+                        EBOOK_URL = Constant.EBOOK_KINHDI;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    case 14:
+                        EBOOK_URL = Constant.EBOOK_HUYENBI;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    case 15:
+                        EBOOK_URL = Constant.EBOOK_HOIKY;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    case 16:
+                        EBOOK_URL = Constant.EBOOK_COTICH;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    case 17:
+                        EBOOK_URL = Constant.EBOOK_TRIETHOC;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    case 18:
+                        EBOOK_URL = Constant.EBOOK_KIENTRUC;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    case 19:
+                        EBOOK_URL = Constant.EBOOK_NONGNGHIEP;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    case 20:
+                        EBOOK_URL = Constant.EBOOK_CNTT;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    case 21:
+                        EBOOK_URL = Constant.EBOOK_AMTHUC;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    case 22:
+                        EBOOK_URL = Constant.EBOOK_PHAPLUAT;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+                    default:
+                        EBOOK_URL = Constant.EBOOK_TIEUTHUYET;
+                        mPresenter.reLoad(EBOOK_URL);
+                        mPageIndex = 1;
+                        break;
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                EBOOK_URL = Constant.EBOOK_TIEUTHUYET;
+
+            }
+        });
+    }
+
+    private void initLoadMoreListener() {
+        mRcEbook.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                    if (!mPresenter.isLastPage)
+                        isLoading = true;
+                    else {
+                        isLoading = false;
+                        if (!recyclerView.canScrollVertically(1))
+                            Toast.makeText(getApplication(), "No more comic", Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                int visibleItemCount = linearLayoutManager.getChildCount();
+                int totalItemCount = linearLayoutManager.getItemCount();
+                int firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
+
+                if (isLoading && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0) {
+                    isLoading = false;
+                    mPageIndex++;
+                    String newUrl = EBOOK_URL + "/" + mPageIndex;
+                    mPresenter.load(newUrl);
+
+                }
+            }
+        });
+    }
+
+    private void initNavigation() {
+        mSlidingBar = new SlidingRootNavBuilder(this)
+                .withMenuLayout(R.layout.navigation_drawer)
+                .withDragDistance(140) //Horizontal translation of a view. Default == 180dp
+                .withRootViewScale(0.7f) //Content view's scale will be interpolated between 1f and 0.7f. Default == 0.65f;
+                .inject();
+    }
+
     @Override
     public void showProgress() {
-     pbLoading.setVisibility(View.VISIBLE);
+        pbLoading.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-    pbLoading.setVisibility(View.GONE);
+        pbLoading.setVisibility(View.GONE);
+    }
+
+    @OnClick(R.id.toolbar_nav)
+    public void onClickNav() {
+        if (mSlidingBar.isMenuClosed()) {
+            mSlidingBar.openMenu();
+        } else {
+            mSlidingBar.closeMenu();
+        }
+    }
+
+    @OnClick(R.id.toolbar_search)
+    public void onClickSearch() {
+        if (edtSearch.getVisibility() == View.GONE) {
+            mSpinner.setVisibility(View.GONE);
+            edtSearch.setVisibility(View.VISIBLE);
+            Utils.showKeyboard(this);
+            edtSearch.requestFocus();
+            edtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                        performSearch();
+                        return true;
+                    }
+                    return false;
+                }
+            });
+        } else {
+            edtSearch.setVisibility(View.GONE);
+        }
+    }
+
+
+    @OnClick(R.id.toolbar_change_mode)
+    public void onClickChangeMode() {
+        startActivity(new Intent(this, MainActivity.class));
+    }
+
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        Utils.hideKeyboard(this);
+        if (edtSearch.getVisibility() == View.VISIBLE) {
+            edtSearch.setVisibility(View.GONE);
+            mSpinner.setVisibility(View.VISIBLE);
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    private void performSearch() {
+
+        String searchQuery = edtSearch.getText().toString();
+        if (!searchQuery.equals("")) {
+            Utils.hideKeyboard(this);
+            edtSearch.setText("");
+            edtSearch.setVisibility(View.GONE);
+            Intent intent = new Intent(this, SearchActivity.class);
+            intent.putExtra(EXTRA_SEARCH_QUERY, searchQuery);
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "Bạn cần nhập truyện cần tìm!", Toast.LENGTH_LONG).show();
+        }
     }
 }

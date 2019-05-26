@@ -11,7 +11,7 @@ public class MainPresenter implements MainConstract.IPresenter, DownloadEbookTas
 
     private MainConstract.IView mView;
     private List<Ebook> data;
-    private boolean isLastPage;
+    public static boolean isLastPage;
 
     public MainPresenter() {
         data = new ArrayList<>();
@@ -33,6 +33,12 @@ public class MainPresenter implements MainConstract.IPresenter, DownloadEbookTas
     @Override
     public void detachView() {
         mView = null;
+    }
+
+    @Override
+    public void reLoad(String url) {
+        data.clear();
+        load(url);
     }
 
     @Override

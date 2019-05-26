@@ -137,7 +137,7 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
 
     private void initSpinnerListener() {
         mSpinner.setDropDownVerticalOffset(100);
-        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this,R.array.comic_type,android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.comic_type, R.layout.layout_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(spinnerAdapter);
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

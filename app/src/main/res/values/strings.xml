@@ -26,4 +26,30 @@
         <item>Psychologico</item>
 
     </string-array>
+
+    <string-array name="ebook_type">
+        <item>Tiểu thuyết nước ngoài</item>
+        <item>Tâm lý - Kỹ năng sống</item>
+        <item>Kinh tế - Quản lý</item>
+        <item>Marketing - Bán hàng</item>
+        <item>Y học - Sức khỏe</item>
+        <item>Ngoại ngữ</item>
+        <item>Khoa học kỹ thuật</item>
+        <item>Thể thao - Nghệ thuật</item>
+        <item>Trinh thám - Hình sự</item>
+        <item>Văn hóa - Tôn giáo</item>
+        <item>Tử vi - Phong thủy</item>
+        <item>Lịch sử - Chính trị</item>
+        <item>Văn học Việt Nam</item>
+        <item>Kinh dị</item>
+        <item>Huyền bí</item>
+        <item>Hồi ký - Tùy bút</item>
+        <item>Cổ tích - Thần thoại</item>
+        <item>Triết học</item>
+        <item>Kiến trúc</item>
+        <item>Nông - Lâm - Ngư</item>
+        <item>Công nghệ thông tin</item>
+        <item>Ẩm thực</item>
+        <item>Thư viện pháp luật</item>
+    </string-array>
 </resources>

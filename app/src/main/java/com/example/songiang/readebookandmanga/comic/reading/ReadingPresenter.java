@@ -48,10 +48,11 @@ public class ReadingPresenter implements ReadingConstract.IPresenter {
                 if (doc != null) {
                     Elements imgElements = doc.select("div.vung_doc");
                     String raw = imgElements.html();
-                    raw = raw.substring(raw.indexOf("["));
+                    Log.d("raw", "doInBackground: " + raw);
+                    raw = raw.substring(raw.indexOf("[") + 1, raw.indexOf("]") - 1);
                     String[] rawArray = raw.split(",");
                     for (String url : rawArray) {
-                        url = url.substring(1, url.length() - 1);
+                        url = url.replaceAll("[\"]", "");
                         data.add(url);
                     }
 
@@ -69,7 +70,9 @@ public class ReadingPresenter implements ReadingConstract.IPresenter {
             super.onPostExecute(v);
             if (mView != null)
                 mView.showContent(data);
-            Log.d("link", "onPostExecute: img link:  "+ data);
+            for (String str : data) {
+                Log.d("link", "onPostExecute: img link:  " + str);
+            }
         }
     }
 

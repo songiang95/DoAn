@@ -35,6 +35,7 @@ import com.example.songiang.readebookandmanga.adapter.ComicAdapter;
 import com.example.songiang.readebookandmanga.comic.detail.DetailActivity;
 import com.example.songiang.readebookandmanga.model.Comic;
 import com.example.songiang.readebookandmanga.utils.Constant;
+import com.orhanobut.hawk.Hawk;
 import com.yarolegovich.slidingrootnav.SlidingRootNav;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
 
@@ -76,6 +77,9 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         //Activate toolbar
+        if (!Hawk.isBuilt()) {
+            Hawk.init(this).build();
+        }
         activateToolbar();
         initNavigation();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -87,7 +91,6 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
         mPresenter = new Presenter();
         mPresenter.attachView(this);
         mPresenter.load(MANGA_URL);
-
 
     }
 
@@ -146,42 +149,34 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
                 switch (position) {
                     case 0:
                         MANGA_URL = Constant.MANGAK_NEW;
-                        mPresenter.reLoad(MANGA_URL);
                         mPageIndex = 1;
                         break;
                     case 1:
                         MANGA_URL = Constant.MANGAK_ACTION;
-                        mPresenter.reLoad(MANGA_URL);
                         mPageIndex = 1;
                         break;
                     case 2:
                         MANGA_URL = Constant.MANGAK_COMEDY;
-                        mPresenter.reLoad(MANGA_URL);
                         mPageIndex = 1;
                         break;
                     case 3:
                         MANGA_URL = Constant.MANGAK_HORROR;
-                        mPresenter.reLoad(MANGA_URL);
                         mPageIndex = 1;
                         break;
                     case 4:
                         MANGA_URL = Constant.MANGAK_MYSTERY;
-                        mPresenter.reLoad(MANGA_URL);
                         mPageIndex = 1;
                         break;
                     case 5:
                         MANGA_URL = Constant.MANGAK_SCHOOL_LIFE;
-                        mPresenter.reLoad(MANGA_URL);
                         mPageIndex = 1;
                         break;
                     case 6:
                         MANGA_URL = Constant.MANGAK_ADVENTURE;
-                        mPresenter.reLoad(MANGA_URL);
                         mPageIndex = 1;
                         break;
                     case 7:
                         MANGA_URL = Constant.MANGAK_SEINEN;
-                        mPresenter.reLoad(MANGA_URL);
                         mPageIndex = 1;
                         break;
                     case 8:
@@ -191,21 +186,19 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
                         break;
                     case 9:
                         MANGA_URL = Constant.MANGAK_SCIFI;
-                        mPresenter.reLoad(MANGA_URL);
                         mPageIndex = 1;
                         break;
                     case 10:
                         MANGA_URL = Constant.MANGAK_PSYCHOLOGICAL;
-                        mPresenter.reLoad(MANGA_URL);
                         mPageIndex = 1;
                         break;
                     default:
                         MANGA_URL = Constant.MANGAK_NEW;
-                        mPresenter.reLoad(MANGA_URL);
                         mPageIndex = 1;
                         break;
 
                 }
+                mPresenter.reLoad(MANGA_URL);
             }
 
             @Override

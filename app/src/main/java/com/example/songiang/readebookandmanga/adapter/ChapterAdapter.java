@@ -61,11 +61,11 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.DetailVi
         @Override
         public void onClick(View v) {
             if(mListener!=null)
-            mListener.onItemClick(v,data.get(getAdapterPosition()));
+                mListener.onItemClick(v, data.get(getAdapterPosition()), getAdapterPosition());
         }
     }
 
     public interface OnItemClickListener{
-        void onItemClick(View v, String url);
+        void onItemClick(View v, String url, int position);
     }
 }

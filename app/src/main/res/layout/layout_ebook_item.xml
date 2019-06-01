@@ -81,7 +81,7 @@
                 android:text="@string/btn_read_ebook" />
 
             <ImageView
-                android:padding="10dp"
+                android:padding="8dp"
                 android:id="@+id/iv_favorite"
                 android:layout_width="40dp"
                 android:layout_height="match_parent"

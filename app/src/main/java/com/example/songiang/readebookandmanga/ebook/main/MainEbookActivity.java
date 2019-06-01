@@ -24,10 +24,10 @@ import com.example.songiang.readebookandmanga.R;
 import com.example.songiang.readebookandmanga.adapter.EbookAdapter;
 import com.example.songiang.readebookandmanga.comic.main.MainActivity;
 import com.example.songiang.readebookandmanga.comic.search.SearchActivity;
+import com.example.songiang.readebookandmanga.ebook.search.SearchEbookActivity;
 import com.example.songiang.readebookandmanga.model.Ebook;
 import com.example.songiang.readebookandmanga.utils.Constant;
 import com.example.songiang.readebookandmanga.utils.Utils;
-import com.google.android.material.appbar.AppBarLayout;
 import com.yarolegovich.slidingrootnav.SlidingRootNav;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
 
@@ -39,7 +39,7 @@ import butterknife.OnClick;
 
 public class MainEbookActivity extends AppCompatActivity implements MainConstract.IView {
 
-    private static final String EXTRA_SEARCH_QUERY = "search query";
+    public static final String EXTRA_SEARCH_QUERY = "search query";
     private String EBOOK_URL;
     @BindView(R.id.rc_ebook)
     RecyclerView mRcEbook;
@@ -57,6 +57,7 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
     private boolean isLoading = true;
     private LinearLayoutManager linearLayoutManager;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +68,7 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
         initLoadMoreListener();
         mPresenter = new MainPresenter();
         mPresenter.attachView(this);
-        mPresenter.load("https://sachvui.com/the-loai/tam-ly-ky-nang-song.html");
+        mPresenter.load(EBOOK_URL);
     }
 
 
@@ -92,6 +93,7 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
         }
     }
 
+
     private void initSpinnerListener() {
         mSpinner.setDropDownVerticalOffset(100);
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.ebook_type, R.layout.layout_spinner_item);
@@ -103,126 +105,99 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
                 switch (position) {
                     case 0:
                         EBOOK_URL = Constant.EBOOK_TIEUTHUYET;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
                     case 1:
                         EBOOK_URL = Constant.EBOOK_TAMLY;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
                     case 2:
                         EBOOK_URL = Constant.EBOOK_KINHTE;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
                     case 3:
                         EBOOK_URL = Constant.EBOOK_MARKETING;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
                     case 4:
                         EBOOK_URL = Constant.EBOOK_YHOC;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
                     case 5:
                         EBOOK_URL = Constant.EBOOK_NGOAINGU;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
                     case 6:
                         EBOOK_URL = Constant.EBOOK_KHOAHOC;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
                     case 7:
                         EBOOK_URL = Constant.EBOOK_NGHETHUAT;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
                     case 8:
                         EBOOK_URL = Constant.EBOOK_TRINHTHAM;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
                     case 9:
                         EBOOK_URL = Constant.EBOOK_TONGIAO;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
                     case 10:
                         EBOOK_URL = Constant.EBOOK_TUVI;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
                     case 11:
                         EBOOK_URL = Constant.EBOOK_LICHSU;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
                     case 12:
                         EBOOK_URL = Constant.EBOOK_VIETNAM;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
                     case 13:
                         EBOOK_URL = Constant.EBOOK_KINHDI;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
                     case 14:
                         EBOOK_URL = Constant.EBOOK_HUYENBI;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
                     case 15:
                         EBOOK_URL = Constant.EBOOK_HOIKY;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
                     case 16:
                         EBOOK_URL = Constant.EBOOK_COTICH;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
                     case 17:
                         EBOOK_URL = Constant.EBOOK_TRIETHOC;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
                     case 18:
                         EBOOK_URL = Constant.EBOOK_KIENTRUC;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
                     case 19:
                         EBOOK_URL = Constant.EBOOK_NONGNGHIEP;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
                     case 20:
                         EBOOK_URL = Constant.EBOOK_CNTT;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
                     case 21:
                         EBOOK_URL = Constant.EBOOK_AMTHUC;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
                     case 22:
                         EBOOK_URL = Constant.EBOOK_PHAPLUAT;
-                        mPresenter.reLoad(EBOOK_URL);
-                        mPageIndex = 1;
-                        break;
-                    default:
-                        EBOOK_URL = Constant.EBOOK_TIEUTHUYET;
-                        mPresenter.reLoad(EBOOK_URL);
                         mPageIndex = 1;
                         break;
 
                 }
+                mPresenter.reLoad(EBOOK_URL);
             }
 
             @Override
@@ -244,7 +219,7 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
                     else {
                         isLoading = false;
                         if (!recyclerView.canScrollVertically(1))
-                            Toast.makeText(getApplication(), "No more comic", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplication(), "Đã hết eBook", Toast.LENGTH_SHORT).show();
 
                     }
                 }
@@ -267,6 +242,16 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (edtSearch.getVisibility() == View.VISIBLE) {
+            edtSearch.setVisibility(View.GONE);
+            mSpinner.setVisibility(View.VISIBLE);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void initNavigation() {
@@ -342,11 +327,17 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
             Utils.hideKeyboard(this);
             edtSearch.setText("");
             edtSearch.setVisibility(View.GONE);
-            Intent intent = new Intent(this, SearchActivity.class);
+            Intent intent = new Intent(this, SearchEbookActivity.class);
             intent.putExtra(EXTRA_SEARCH_QUERY, searchQuery);
             startActivity(intent);
         } else {
-            Toast.makeText(this, "Bạn cần nhập truyện cần tìm!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Bạn cần nhập sách cần tìm!", Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPresenter.cancelDownload();
     }
 }

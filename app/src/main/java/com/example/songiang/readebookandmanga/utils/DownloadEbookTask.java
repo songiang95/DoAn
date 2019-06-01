@@ -4,56 +4,63 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.songiang.readebookandmanga.model.Ebook;
+import com.example.songiang.readebookandmanga.observer.Observer;
+import com.example.songiang.readebookandmanga.observer.Subject;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 
-public class DownloadEbookTask extends AsyncTask<String, Void, Void> {
+public class DownloadEbookTask extends AsyncTask<String, Void, Void> implements CancelDownloadCallback, Subject {
 
     private final String TAG = "abba";
     private List<Ebook> data;
     private DownloadEbookCallback mCallback;
+    private List<Observer> listTask;
 
     public DownloadEbookTask(List data, DownloadEbookCallback callback) {
         this.data = data;
         this.mCallback = callback;
+        listTask = new ArrayList<>();
     }
 
     @Override
     protected Void doInBackground(String... strings) {
 
-        try {
-            Document doc = Jsoup.connect(strings[0]).get();
-            if (doc != null) {
-                Elements elements = doc.select("div.ebook");
-                for (Element element : elements) {
-                    Ebook ebook = new Ebook();
-                    Element urlSubject = element.getElementsByTag("a").first();
-                    Element imgSubject = element.getElementsByTag("img").first();
-                    if (urlSubject != null) {
-                        ebook.setmUrl(urlSubject.attr("href"));
-                        Log.d(TAG, "doInBackground: ebook url:  " + urlSubject.attr("href"));
-                        new DownloadEbookDetailTask(ebook).execute(ebook.getmUrl());
-                    }
-                    if (imgSubject != null) {
-                        ebook.setmCover(imgSubject.attr("src"));
-                        ebook.setmTitle(imgSubject.attr("alt"));
-                        Log.d(TAG, "doInBackground: ebook img:  " + imgSubject.attr("src"));
-                        Log.d(TAG, "doInBackground: ebook title:  " + imgSubject.attr("alt"));
-                    }
+        if (!isCancelled()) {
+            try {
+                Document doc = Jsoup.connect(strings[0]).get();
+                if (doc != null) {
+                    Elements elements = doc.select("div.ebook");
+                    for (Element element : elements) {
+                        Ebook ebook = new Ebook();
+                        Element urlSubject = element.getElementsByTag("a").first();
+                        Element imgSubject = element.getElementsByTag("img").first();
+                        if (urlSubject != null) {
+                            ebook.setmUrl(urlSubject.attr("href"));
+                            DownloadEbookDetailTask downloadTask = new DownloadEbookDetailTask(ebook);
+                            downloadTask.execute(ebook.getmUrl());
+                            this.register(downloadTask);
+                        }
+                        if (imgSubject != null) {
+                            ebook.setmCover(imgSubject.attr("src"));
+                            ebook.setmTitle(imgSubject.attr("alt"));
+                        }
 
+                    }
                 }
-            }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (mCallback != null) {
-                mCallback.isLastPage(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+                if (mCallback != null) {
+                    mCallback.isLastPage(true);
+                }
             }
         }
 
@@ -61,7 +68,42 @@ public class DownloadEbookTask extends AsyncTask<String, Void, Void> {
         return null;
     }
 
-    private class DownloadEbookDetailTask extends AsyncTask<String, Void, Void> {
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+
+    }
+
+    @Override
+    public void onCancel() {
+        notifyObservers();
+        this.cancel(true);
+        Log.d("bella", "onCancel: post " + this.isCancelled());
+
+    }
+
+    @Override
+    public void register(Observer observer) {
+        if (!listTask.contains(observer)) {
+            listTask.add(observer);
+        }
+    }
+
+    @Override
+    public void remove(Observer observer) {
+        listTask.remove(observer);
+
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Observer observer : listTask) {
+            observer.update(true);
+        }
+    }
+
+
+    private class DownloadEbookDetailTask extends AsyncTask<String, Void, Void> implements Observer {
 
         private Ebook ebook;
 
@@ -72,42 +114,37 @@ public class DownloadEbookTask extends AsyncTask<String, Void, Void> {
         @Override
         protected Void doInBackground(String... strings) {
 
+
             try {
                 Document doc = Jsoup.connect(strings[0]).get();
                 if (doc != null) {
                     Elements elements = doc.select("div.col-md-8");
-                    Elements elementsDescription = doc.select("div.gioi_thieu_sach");
-                    if (elementsDescription != null) {
-                        for (Element element : elementsDescription) {
-                            Element description = element.getElementsByTag("p").first();
-                            String bookDescription = description.text();
-                            ebook.setmDescription(bookDescription);
-                            Log.d(TAG, "doInBackground: description "+bookDescription);
-                        }
-                    }
-
                     for (Element element : elements) {
 
                         Element authorSubject = element.getElementsByTag("h5").first();
                         Element pdfSubject = element.getElementsByClass("btn-danger").first();
                         if (authorSubject != null) {
                             ebook.setmAuthorName(authorSubject.text());
-                            Log.d(TAG, "doInBackground: ebook author:  " + authorSubject.text());
                         }
                         if (pdfSubject != null) {
                             ebook.setmPdfLink(pdfSubject.attr("href"));
-                            Log.d(TAG, "doInBackground: ebook pdf link:  " + pdfSubject.attr("href"));
                         }
                         data.add(ebook);
+                        if (isCancelled()) {
+                            break;
+                        }
                     }
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
+                Log.d(TAG, "doInBackground: loi loading");
                 if (mCallback != null) {
                     mCallback.isLastPage(true);
                 }
             }
+
+
             return null;
         }
 
@@ -117,6 +154,12 @@ public class DownloadEbookTask extends AsyncTask<String, Void, Void> {
             if (mCallback != null) {
                 mCallback.onFinishDownload(data);
             }
+        }
+
+
+        @Override
+        public void update(boolean check) {
+            this.cancel(check);
         }
     }
 

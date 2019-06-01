@@ -1,6 +1,7 @@
 package com.example.songiang.readebookandmanga.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.songiang.readebookandmanga.R;
+import com.example.songiang.readebookandmanga.ebook.reading.ReadEbookActivity;
 import com.example.songiang.readebookandmanga.model.Ebook;
 import com.makeramen.roundedimageview.RoundedImageView;
 
@@ -25,6 +27,8 @@ import butterknife.OnClick;
 
 public class EbookAdapter extends RecyclerView.Adapter<EbookAdapter.MyEbookViewHolder> {
 
+
+    public static final String EXTRA_PDF = "pdf";
     private List<Ebook> data;
     private Context mContext;
 
@@ -76,7 +80,9 @@ public class EbookAdapter extends RecyclerView.Adapter<EbookAdapter.MyEbookViewH
 
         @OnClick(R.id.btn_read)
         public void onClickRead() {
-
+            Intent intent = new Intent(mContext, ReadEbookActivity.class);
+            intent.putExtra(EXTRA_PDF, data.get(getAdapterPosition()).getmPdfLink());
+            mContext.startActivity(intent);
         }
 
         @OnClick(R.id.iv_favorite)

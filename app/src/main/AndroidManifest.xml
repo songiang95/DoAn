@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -12,7 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoTitleBar">
-        <activity android:name=".ebook.main.MainEbookActivity"></activity>
+        <activity android:name=".ebook.search.SearchEbookActivity"></activity>
+        <activity android:name=".ebook.reading.ReadEbookActivity" />
+        <activity android:name=".ebook.main.MainEbookActivity" />
         <activity android:name=".comic.search.SearchActivity" />
         <activity android:name=".comic.reading.ReadComicActivity" />
         <activity android:name=".comic.detail.DetailActivity" />

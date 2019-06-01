@@ -7,33 +7,34 @@
     android:background="@drawable/navigation_bg"
     tools:context=".comic.detail.DetailActivity">
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_marginBottom="48dp"
+    <TextView
+        android:id="@+id/tv_comic_title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="48dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="24dp"
+        android:background="@color/black_opacity_50"
+        android:gravity="center"
+        android:maxLines="2"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tv_comic_title"
+        android:layout_marginBottom="48dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/tv_comic_title"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="24dp"
-                android:background="@color/black_opacity_50"
-                android:gravity="center"
-                android:maxLines="2"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold" />
 
             <LinearLayout
                 android:id="@+id/rl_top"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_comic_title"
                 android:orientation="horizontal"
                 android:paddingStart="10dp"
                 android:paddingTop="10dp"
@@ -44,39 +45,37 @@
                     android:layout_width="0dp"
                     android:layout_height="160dp"
                     android:layout_weight="1"
-                    app:riv_corner_radius="5dp"
+                    android:scaleType="fitCenter"
                     app:riv_border_color="#c0c0c0"
                     app:riv_border_width="2dp"
-                    android:scaleType="fitCenter"
+                    app:riv_corner_radius="5dp"
 
                     />
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="10dp"
-                    android:layout_weight="2">
+                    android:layout_weight="2"
+                    android:orientation="vertical">
 
 
                     <TextView
                         android:id="@+id/tv_author"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginTop="30dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_below="@id/tv_author"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginTop="20dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
                         android:orientation="horizontal"
-                        android:paddingTop="50dp"
-                        android:paddingBottom="0dp">
+                        android:paddingTop="40dp">
 
 
                         <TextView
@@ -86,6 +85,8 @@
                             android:layout_marginEnd="2dp"
                             android:layout_weight="1"
                             android:background="@drawable/ripple_chap_item"
+                            android:clickable="true"
+                            android:focusable="true"
                             android:gravity="center"
                             android:textColor="@color/white"
                             android:textSize="16sp" />
@@ -115,7 +116,7 @@
 
                     </LinearLayout>
 
-                </RelativeLayout>
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -138,12 +139,12 @@
     </androidx.core.widget.NestedScrollView>
 
     <ProgressBar
-        android:indeterminateDrawable="@drawable/progress_loading"
         android:id="@+id/pb_loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:indeterminateDrawable="@drawable/progress_loading"
         android:visibility="gone" />
 
     <include layout="@layout/bottom_toolbar" />

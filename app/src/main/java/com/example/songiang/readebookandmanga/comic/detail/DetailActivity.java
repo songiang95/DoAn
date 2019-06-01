@@ -20,7 +20,9 @@ import com.example.songiang.readebookandmanga.adapter.ChapterAdapter;
 import com.example.songiang.readebookandmanga.comic.main.MainActivity;
 import com.example.songiang.readebookandmanga.model.Comic;
 import com.example.songiang.readebookandmanga.comic.reading.ReadComicActivity;
+import com.example.songiang.readebookandmanga.utils.Constant;
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,6 +50,7 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
     private List<String> listChap;
     private DetailContract.IPresenter mPresenter;
     public static final String EXTRA_URL = "url";
+    private Comic comic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +58,20 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
         Intent receiveIntent = getIntent();
-        Comic comic = (Comic) receiveIntent.getSerializableExtra(MainActivity.EXTRA_COMIC);
+        comic = (Comic) receiveIntent.getSerializableExtra(MainActivity.EXTRA_COMIC);
         mPresenter = new DetailPresenter();
         mPresenter.attachView(this);
         mPresenter.load(comic);
+
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        int chapNumbContinue = Hawk.get(Constant.PREF_CONTINUE_CHAP_NUMB + comic.getName(), 1);
+        tvContinue.setText("Read " + chapNumbContinue);
+    }
 
     private void getChapList(Comic comic) {
         Map map = comic.getMap();
@@ -71,7 +82,6 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
     @Override
     public void showContent(Comic comic) {
         getChapList(comic);
-        tvContinue.setText("Read 1");
         tvTitle.setText(comic.getName());
         tvAuthor.setText(comic.getArtist());
         Glide.with(this).load(comic.getImage()).into(ivCover);
@@ -100,18 +110,26 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
     }
 
 
-    @OnClick(R.id.tv_read_continue)
-    public void onClickReadContinue() {
-    }
-
     @Override
-    public void onItemClick(View v, String url) {
+    public void onItemClick(View v, String url, int position) {
         if (url != null) {
+
+            Hawk.put(Constant.PREF_CONTINUE_CHAP_NUMB + comic.getName(), position + 1);
+            Hawk.put(Constant.PREF_CONTINUE_CHAP_URL + comic.getName(), url);
+
             Intent intent = new Intent(this, ReadComicActivity.class);
             intent.putExtra(EXTRA_URL, url);
             startActivity(intent);
         } else {
             Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
         }
+    }
+
+    @OnClick(R.id.tv_read_continue)
+    public void onClickContinue() {
+        Intent intent = new Intent(this, ReadComicActivity.class);
+        String url = Hawk.get(Constant.PREF_CONTINUE_CHAP_URL + comic.getName(), listChap.get(0));
+        intent.putExtra(EXTRA_URL, url);
+        startActivity(intent);
     }
 }

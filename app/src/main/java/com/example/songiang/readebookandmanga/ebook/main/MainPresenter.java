@@ -1,6 +1,7 @@
 package com.example.songiang.readebookandmanga.ebook.main;
 
 import com.example.songiang.readebookandmanga.model.Ebook;
+import com.example.songiang.readebookandmanga.utils.CancelDownloadCallback;
 import com.example.songiang.readebookandmanga.utils.DownloadEbookTask;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ public class MainPresenter implements MainConstract.IPresenter, DownloadEbookTas
     private MainConstract.IView mView;
     private List<Ebook> data;
     public static boolean isLastPage;
+    private CancelDownloadCallback mCallback;
 
     public MainPresenter() {
         data = new ArrayList<>();
@@ -21,8 +23,15 @@ public class MainPresenter implements MainConstract.IPresenter, DownloadEbookTas
     public void load(String url) {
         if (!isLastPage) {
             mView.showProgress();
-            new DownloadEbookTask(data, this).execute(url);
+            DownloadEbookTask downloadTask = new DownloadEbookTask(data, this);
+            setmCallback(downloadTask);
+            downloadTask.execute(url);
+
         }
+    }
+
+    public void setmCallback(CancelDownloadCallback mCallback) {
+        this.mCallback = mCallback;
     }
 
     @Override
@@ -37,8 +46,17 @@ public class MainPresenter implements MainConstract.IPresenter, DownloadEbookTas
 
     @Override
     public void reLoad(String url) {
+        cancelDownload();
         data.clear();
+        isLastPage = false;
         load(url);
+
+    }
+
+    public void cancelDownload() {
+        if (mCallback != null) {
+            mCallback.onCancel();
+        }
     }
 
     @Override

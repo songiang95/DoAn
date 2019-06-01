@@ -38,5 +38,7 @@ public class Constant {
     public final static String EBOOK_AMTHUC = "https://sachvui.com/the-loai/am-thuc-hoc-nau-an.html";
     public final static String EBOOK_PHAPLUAT = "https://sachvui.com/the-loai/thu-vien-phap-luat.html";
 
+    public static final String PREF_CONTINUE_CHAP_NUMB = "continue";
+    public static final String PREF_CONTINUE_CHAP_URL = "continue url";
 
 }

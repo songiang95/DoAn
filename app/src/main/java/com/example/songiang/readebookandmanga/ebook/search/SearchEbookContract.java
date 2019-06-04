@@ -13,6 +13,7 @@ public interface SearchEbookContract {
         void showProgress();
 
         void hideProgress();
+        void showError();
     }
 
     public interface IPresenter {

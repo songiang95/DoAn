@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
+import com.example.songiang.readebookandmanga.comic.favorite.FavoriteActivity;
 import com.example.songiang.readebookandmanga.comic.search.SearchActivity;
 import com.example.songiang.readebookandmanga.ebook.main.MainEbookActivity;
 import com.example.songiang.readebookandmanga.utils.Utils;
@@ -272,6 +273,14 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
             mSlidingBar.closeMenu();
         }
     }
+
+    @OnClick(R.id.toolbar_favorite)
+    public void onClickFavorite()
+    {
+        Intent intent = new Intent(this, FavoriteActivity.class);
+        startActivity(intent);
+    }
+
 
     @OnClick(R.id.toolbar_search)
     public void onClickSearch() {

@@ -40,5 +40,6 @@ public class Constant {
 
     public static final String PREF_CONTINUE_CHAP_NUMB = "continue";
     public static final String PREF_CONTINUE_CHAP_URL = "continue url";
-
+    public static final String PREF_FAVORITED = "favorite";
+    public static final String EXTRA_COMIC = "comic";
 }

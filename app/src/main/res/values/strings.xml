@@ -11,6 +11,7 @@
     <string name="nav_item_ebook">Đọc Sách</string>
     <string name="search_hint">Nhập tên truyện</string>
     <string name="btn_read_ebook">Đọc</string>
+    <string name="favorite">Favorites</string>
 
     <string-array name="comic_type">
         <item>Mới cập nhập</item>

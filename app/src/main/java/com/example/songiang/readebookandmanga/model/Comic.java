@@ -1,22 +1,37 @@
 package com.example.songiang.readebookandmanga.model;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+import org.jetbrains.annotations.NonNls;
+
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Entity(tableName = "favorite")
 public class Comic implements Serializable {
 
+    @NonNull
+    @PrimaryKey
+    @ColumnInfo(name = "id")
     private String name;
+    @ColumnInfo(name = "image")
     private String image;
-    private String newestChapter;
+    @Ignore
     private String artist;
+    @ColumnInfo(name = "detail_url")
     private String detailUrl;
+    @Ignore
     private Map<String, String> chapter;
+
+
     public Comic() {
         chapter = new LinkedHashMap<>();
     }
-
-
     public void addChap(String key, String value) {
         chapter.put(key,value);
     }
@@ -48,14 +63,6 @@ public class Comic implements Serializable {
         this.image = image;
     }
 
-    public String getNewestChapter() {
-        return newestChapter;
-    }
-
-    public void setNewestChapter(String newestChapter) {
-        this.newestChapter = newestChapter;
-    }
-
     public String getArtist() {
         return artist;
     }
@@ -63,4 +70,7 @@ public class Comic implements Serializable {
     public void setArtist(String artist) {
         this.artist = artist;
     }
+
+
+
 }

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,9 +19,11 @@ import com.bumptech.glide.Glide;
 import com.example.songiang.readebookandmanga.R;
 import com.example.songiang.readebookandmanga.adapter.ChapterAdapter;
 import com.example.songiang.readebookandmanga.comic.main.MainActivity;
+import com.example.songiang.readebookandmanga.database.Repository;
 import com.example.songiang.readebookandmanga.model.Comic;
 import com.example.songiang.readebookandmanga.comic.reading.ReadComicActivity;
 import com.example.songiang.readebookandmanga.utils.Constant;
+import com.example.songiang.readebookandmanga.utils.Utils;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.orhanobut.hawk.Hawk;
 
@@ -47,6 +50,8 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
     RecyclerView recyclerView;
     @BindView(R.id.tv_read_continue)
     TextView tvContinue;
+    @BindView(R.id.iv_favorite)
+    ImageView ivFavorite;
     private List<String> listChap;
     private DetailContract.IPresenter mPresenter;
     public static final String EXTRA_URL = "url";
@@ -71,6 +76,9 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
         super.onResume();
         int chapNumbContinue = Hawk.get(Constant.PREF_CONTINUE_CHAP_NUMB + comic.getName(), 1);
         tvContinue.setText("Read " + chapNumbContinue);
+        if(Utils.isFavorited(comic)){
+            Glide.with(this).load(R.drawable.ic_favorite_red_24dp).into(ivFavorite);
+        }
     }
 
     private void getChapList(Comic comic) {
@@ -131,5 +139,32 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
         String url = Hawk.get(Constant.PREF_CONTINUE_CHAP_URL + comic.getName(), listChap.get(0));
         intent.putExtra(EXTRA_URL, url);
         startActivity(intent);
+    }
+
+    @OnClick(R.id.iv_favorite)
+    public void onClickFavorite()
+    {
+        if (!Utils.isFavorited(comic)) {
+            new Thread() {
+                @Override
+                public void run() {
+                    Repository repository = new Repository(getApplicationContext());
+                    repository.getFavoriteDAO().insertComicFavorite(comic);
+                }
+            }.start();
+            Hawk.put(comic.getName(),true);
+            Glide.with(this).load(R.drawable.ic_favorite_red_24dp).into(ivFavorite);
+        }
+        else{
+            new Thread() {
+                @Override
+                public void run() {
+                    Repository repository = new Repository(getApplicationContext());
+                    repository.getFavoriteDAO().deleteFavoriteGrammar(comic);
+                }
+            }.start();
+            Hawk.put(comic.getName(),false);
+            Glide.with(this).load(R.drawable.ic_favorite_black_24dp).into(ivFavorite);
+        }
     }
 }

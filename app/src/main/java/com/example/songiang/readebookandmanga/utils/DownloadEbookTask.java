@@ -15,6 +15,7 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
+import java.util.concurrent.ThreadPoolExecutor;
 
 
 public class DownloadEbookTask extends AsyncTask<String, Void, Void> implements CancelDownloadCallback, Subject {
@@ -23,11 +24,15 @@ public class DownloadEbookTask extends AsyncTask<String, Void, Void> implements 
     private List<Ebook> data;
     private DownloadEbookCallback mCallback;
     private List<Observer> listTask;
+    private AppExecutors executors;
+    ThreadPoolExecutor threadPoolExecutor;
 
-    public DownloadEbookTask(List data, DownloadEbookCallback callback) {
+    public DownloadEbookTask(ThreadPoolExecutor threadPoolExecutor,List data, DownloadEbookCallback callback) {
         this.data = data;
         this.mCallback = callback;
         listTask = new ArrayList<>();
+        executors = AppExecutors.getInstance();
+        this.threadPoolExecutor  = threadPoolExecutor;
     }
 
     @Override
@@ -44,9 +49,10 @@ public class DownloadEbookTask extends AsyncTask<String, Void, Void> implements 
                         Element imgSubject = element.getElementsByTag("img").first();
                         if (urlSubject != null) {
                             ebook.setmUrl(urlSubject.attr("href"));
-                            DownloadEbookDetailTask downloadTask = new DownloadEbookDetailTask(ebook);
-                            downloadTask.execute(ebook.getmUrl());
-                            this.register(downloadTask);
+                            DownloadDetail downloadTask = new DownloadDetail(ebook);
+                            threadPoolExecutor.execute(downloadTask);
+                            Log.d(TAG, "doInBackground: add download task");
+
                         }
                         if (imgSubject != null) {
                             ebook.setmCover(imgSubject.attr("src"));
@@ -78,8 +84,6 @@ public class DownloadEbookTask extends AsyncTask<String, Void, Void> implements 
     public void onCancel() {
         notifyObservers();
         this.cancel(true);
-        Log.d("bella", "onCancel: post " + this.isCancelled());
-
     }
 
     @Override
@@ -102,6 +106,50 @@ public class DownloadEbookTask extends AsyncTask<String, Void, Void> implements 
         }
     }
 
+
+    private class DownloadDetail implements Runnable{
+        private Ebook mEbook;
+        public DownloadDetail(Ebook ebook){
+            mEbook = ebook;
+        }
+        @Override
+        public void run() {
+
+            if (!Thread.currentThread().isInterrupted()) {
+                try {
+                    Document doc = Jsoup.connect(mEbook.getmUrl()).get();
+                    if (doc != null) {
+                        Elements elements = doc.select("div.col-md-8");
+                        for (Element element : elements) {
+
+                            Element authorSubject = element.getElementsByTag("h5").first();
+                            Element pdfSubject = element.getElementsByClass("btn-danger").first();
+                            if (authorSubject != null) {
+                                mEbook.setmAuthorName(authorSubject.text());
+                            }
+                            if (pdfSubject != null) {
+                                mEbook.setmPdfLink(pdfSubject.attr("href"));
+                            }
+                            data.add(mEbook);
+                            executors.getMainThread().execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mCallback.onFinishDownload(data);
+                                }
+                            });
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d(TAG, "doInBackground: loi loading");
+                    if (mCallback != null) {
+                        mCallback.isLastPage(true);
+                    }
+                }
+            }
+        }
+    }
 
     private class DownloadEbookDetailTask extends AsyncTask<String, Void, Void> implements Observer {
 
@@ -161,12 +209,17 @@ public class DownloadEbookTask extends AsyncTask<String, Void, Void> implements 
         public void update(boolean check) {
             this.cancel(check);
         }
-    }
 
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            Log.d(TAG, "onCancelled: ");
+        }
+    }
+    
 
     public interface DownloadEbookCallback {
         void onFinishDownload(List<Ebook> data);
-
         void isLastPage(boolean bool);
     }
 

@@ -1,11 +1,16 @@
 package com.example.songiang.readebookandmanga.ebook.main;
 
 import com.example.songiang.readebookandmanga.model.Ebook;
+import com.example.songiang.readebookandmanga.utils.AppExecutors;
 import com.example.songiang.readebookandmanga.utils.CancelDownloadCallback;
 import com.example.songiang.readebookandmanga.utils.DownloadEbookTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class MainPresenter implements MainConstract.IPresenter, DownloadEbookTask.DownloadEbookCallback {
 
@@ -14,16 +19,19 @@ public class MainPresenter implements MainConstract.IPresenter, DownloadEbookTas
     private List<Ebook> data;
     public static boolean isLastPage;
     private CancelDownloadCallback mCallback;
+    private AppExecutors executors;
+    private ThreadPoolExecutor threadPoolExecutor;
 
     public MainPresenter() {
         data = new ArrayList<>();
+        threadPoolExecutor = new ThreadPoolExecutor(3, 3, 0, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
     }
 
     @Override
     public void load(String url) {
         if (!isLastPage) {
             mView.showProgress();
-            DownloadEbookTask downloadTask = new DownloadEbookTask(data, this);
+            DownloadEbookTask downloadTask = new DownloadEbookTask(threadPoolExecutor, data, this);
             setmCallback(downloadTask);
             downloadTask.execute(url);
 
@@ -54,8 +62,9 @@ public class MainPresenter implements MainConstract.IPresenter, DownloadEbookTas
     }
 
     public void cancelDownload() {
-        if (mCallback != null) {
-            mCallback.onCancel();
+        if (threadPoolExecutor != null) {
+            threadPoolExecutor.shutdownNow();
+            threadPoolExecutor = new ThreadPoolExecutor(3, 3, 0, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
         }
     }
 

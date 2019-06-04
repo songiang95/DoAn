@@ -6,6 +6,9 @@ import com.example.songiang.readebookandmanga.utils.DownloadEbookTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class SearchEbookPresenter implements SearchEbookContract.IPresenter, DownloadEbookTask.DownloadEbookCallback {
 
@@ -13,6 +16,7 @@ public class SearchEbookPresenter implements SearchEbookContract.IPresenter, Dow
     private List<Ebook> data;
     public static boolean isLastPage;
     private CancelDownloadCallback mCallback;
+    private ThreadPoolExecutor threadPoolExecutor;
 
     public SearchEbookPresenter() {
         data = new ArrayList<>();
@@ -31,10 +35,11 @@ public class SearchEbookPresenter implements SearchEbookContract.IPresenter, Dow
     @Override
     public void load(String url) {
         if (!isLastPage) {
+            threadPoolExecutor = new ThreadPoolExecutor(3,3,0, TimeUnit.SECONDS,new LinkedBlockingQueue<Runnable>());
             mView.showProgress();
             url.replace(" ", "+");
             String searchUrl = "https://sachvui.com/search/?tu-khoa=" + url;
-            DownloadEbookTask downloadEbookTask = new DownloadEbookTask(data, this);
+            DownloadEbookTask downloadEbookTask = new DownloadEbookTask(threadPoolExecutor,data, this);
             downloadEbookTask.execute(searchUrl);
             setCallback(downloadEbookTask);
         }
@@ -53,6 +58,9 @@ public class SearchEbookPresenter implements SearchEbookContract.IPresenter, Dow
         if (data != null) {
             mView.showContent(data);
             mView.hideProgress();
+        }
+        else{
+            mView.showError();
         }
     }
 

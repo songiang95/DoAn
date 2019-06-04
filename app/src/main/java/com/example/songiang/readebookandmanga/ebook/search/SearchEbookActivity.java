@@ -54,9 +54,13 @@ public class SearchEbookActivity extends AppCompatActivity implements SearchEboo
             linearLayoutManager = new LinearLayoutManager(this);
             rcSearch.setLayoutManager(linearLayoutManager);
             tvSearchQuery.setText(searchQuery);
-        } else {
-            tvSearchQuery.setText("Không tìm thấy sách");
         }
+    }
+
+    @Override
+    public void showError() {
+        hideProgress();
+        tvSearchQuery.setText("Không tìm thấy sách");
     }
 
     @Override

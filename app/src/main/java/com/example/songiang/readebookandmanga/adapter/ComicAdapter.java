@@ -3,6 +3,8 @@ package com.example.songiang.readebookandmanga.adapter;
 import android.content.Context;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.songiang.readebookandmanga.R;
 import com.example.songiang.readebookandmanga.model.Comic;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
@@ -44,7 +47,12 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.MyViewHolder
     public void onBindViewHolder(MyViewHolder viewHolder, int i) {
         final Comic temp = data.get(i);
         if (temp != null) {
-            Glide.with(mContext).load(temp.getImage()).into(viewHolder.ivImage);
+//            Glide.with(mContext)
+////                    .load(temp.getImage())
+////                    .centerCrop()
+////                    .into(viewHolder.ivImage);
+            Uri uri = Uri.parse(temp.getImage());
+            viewHolder.ivImage.setImageURI(uri);
             viewHolder.tvComicName.setText(temp.getName());
         }
 
@@ -58,7 +66,7 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.MyViewHolder
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.iv_comic_item)
-        ImageView ivImage;
+        SimpleDraweeView ivImage;
         @BindView(R.id.tv_comic_item)
         TextView tvComicName;
 

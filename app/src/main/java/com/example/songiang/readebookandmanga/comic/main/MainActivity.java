@@ -11,6 +11,7 @@ import com.example.songiang.readebookandmanga.comic.favorite.FavoriteActivity;
 import com.example.songiang.readebookandmanga.comic.search.SearchActivity;
 import com.example.songiang.readebookandmanga.ebook.main.MainEbookActivity;
 import com.example.songiang.readebookandmanga.utils.Utils;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.android.material.appbar.AppBarLayout;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -77,6 +78,9 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        Fresco.initialize(this);
+
         //Activate toolbar
         if (!Hawk.isBuilt()) {
             Hawk.init(this).build();
@@ -272,6 +276,11 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
         } else {
             mSlidingBar.closeMenu();
         }
+    }
+
+    @OnClick(R.id.toolbar_home)
+    public void onClickHome(){
+        Toast.makeText(this,"Bạn đang ở màn hình chính",Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.toolbar_favorite)

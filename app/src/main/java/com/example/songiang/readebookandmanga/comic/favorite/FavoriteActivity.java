@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
 public class FavoriteActivity extends AppCompatActivity implements ComicAdapter.OnItemClickListener {
 
 
-    private ArrayList<Comic> dataFavorite;
+    private List<Comic> dataFavorite;
     @BindView(R.id.rc_favorite)
     RecyclerView rcFavorite;
     ComicAdapter mAdapter;
@@ -38,29 +38,31 @@ public class FavoriteActivity extends AppCompatActivity implements ComicAdapter.
         setContentView(R.layout.activity_favorite);
         ButterKnife.bind(this);
         rcFavorite.setLayoutManager(new GridLayoutManager(this, 3));
-        mAdapter = new ComicAdapter(this, dataFavorite, this);
+
+
     }
 
-    private class GetFavoriteTask extends AsyncTask<Void, Void, Void>{
+    private class GetFavoriteTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... voids) {
             Repository repository = new Repository(getApplicationContext());
-            dataFavorite = (ArrayList)repository.getFavoriteDAO().getAllFavoriteComic();
+            dataFavorite = (ArrayList) repository.getFavoriteDAO().getAllFavoriteComic();
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            mAdapter = new ComicAdapter(FavoriteActivity.this, dataFavorite, FavoriteActivity.this);
             rcFavorite.setAdapter(mAdapter);
-            mAdapter.notifyDataSetChanged();
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        new GetFavoriteTask().execute();
     }
 
     @Override

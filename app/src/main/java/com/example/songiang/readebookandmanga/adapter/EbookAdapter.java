@@ -50,7 +50,9 @@ public class EbookAdapter extends RecyclerView.Adapter<EbookAdapter.MyEbookViewH
     public void onBindViewHolder(@NonNull MyEbookViewHolder holder, int position) {
         final Ebook ebook = data.get(position);
         if (ebook != null) {
-            Glide.with(mContext).load(ebook.getmCover()).into(holder.ivBookCover);
+            Glide.with(mContext)
+                    .load(ebook.getmCover())
+                    .into(holder.ivBookCover);
             holder.tvBookTitle.setText(ebook.getmTitle());
             holder.tvAuthor.setText(ebook.getmAuthorName());
             // holder.tvBookType.setText(ebook.getmBookType());

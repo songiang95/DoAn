@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -16,8 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 import com.example.songiang.readebookandmanga.R;
 import com.example.songiang.readebookandmanga.adapter.ChapterAdapter;
+import com.example.songiang.readebookandmanga.comic.favorite.FavoriteActivity;
 import com.example.songiang.readebookandmanga.comic.main.MainActivity;
 import com.example.songiang.readebookandmanga.database.Repository;
 import com.example.songiang.readebookandmanga.model.Comic;
@@ -92,12 +95,14 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
         getChapList(comic);
         tvTitle.setText(comic.getName());
         tvAuthor.setText(comic.getArtist());
-        Glide.with(this).load(comic.getImage()).into(ivCover);
+        Glide.with(this)
+                .load(comic.getImage())
+                .centerCrop()
+                .into(ivCover);
         ChapterAdapter chapterAdapter = new ChapterAdapter(listChap, this);
         recyclerView.setAdapter(chapterAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 5));
-
     }
 
 
@@ -140,6 +145,19 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
         intent.putExtra(EXTRA_URL, url);
         startActivity(intent);
     }
+
+    @OnClick(R.id.toolbar_favorite)
+    public void onClickToolbarFavorite()
+    {
+        Intent intent = new Intent(this, FavoriteActivity.class);
+        startActivity(intent);
+    }
+    @OnClick(R.id.toolbar_home)
+    public void onClickHome(){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
 
     @OnClick(R.id.iv_favorite)
     public void onClickFavorite()

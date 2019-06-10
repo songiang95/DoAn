@@ -21,6 +21,7 @@ import com.example.songiang.readebookandmanga.adapter.ChapterAdapter;
 import com.example.songiang.readebookandmanga.comic.favorite.FavoriteActivity;
 import com.example.songiang.readebookandmanga.comic.main.MainActivity;
 import com.example.songiang.readebookandmanga.database.Repository;
+import com.example.songiang.readebookandmanga.ebook.main.MainEbookActivity;
 import com.example.songiang.readebookandmanga.model.Comic;
 import com.example.songiang.readebookandmanga.comic.reading.ReadComicActivity;
 import com.example.songiang.readebookandmanga.utils.Constant;
@@ -141,6 +142,12 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
         Intent intent = new Intent(this, ReadComicActivity.class);
         String url = Hawk.get(Constant.PREF_CONTINUE_CHAP_URL + comic.getName(), listChap.get(0));
         intent.putExtra(EXTRA_URL, url);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.toolbar_change_mode)
+    public void onClickChangeMode(){
+        Intent intent = new Intent(this, MainEbookActivity.class);
         startActivity(intent);
     }
 

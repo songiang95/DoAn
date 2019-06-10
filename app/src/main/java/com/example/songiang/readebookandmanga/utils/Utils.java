@@ -1,5 +1,6 @@
 package com.example.songiang.readebookandmanga.utils;
 
+import android.content.res.Resources;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -22,6 +23,9 @@ public class Utils {
         return bool;
     }
 
+    public static int dpToPx(float dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
 
     public static void showKeyboard(AppCompatActivity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE);

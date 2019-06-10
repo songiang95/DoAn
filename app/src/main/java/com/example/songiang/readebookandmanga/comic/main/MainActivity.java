@@ -17,6 +17,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -51,19 +52,16 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
 
     public static final String EXTRA_COMIC = "comic";
     public static final String EXTRA_SEARCH_QUERY = "search";
-    @BindView(R.id.toolbar_top)
-    AppBarLayout toolbarTop;
+
     @BindView(R.id.recycle_manga_list)
     RecyclerView mRecycleView;
     private String MANGA_URL;
-    @BindView(R.id.pb_loading)
-    ProgressBar pbLoading;
     @BindView(R.id.tb_spinner)
     Spinner mSpinner;
     @BindView(R.id.edt_search)
     EditText edtSearch;
-    @BindView(R.id.main_bg)
-    CoordinatorLayout mainBg;
+    @BindView(R.id.refresh_layout)
+    SwipeRefreshLayout mRefreshLayout;
 
     private SlidingRootNav mSlidingBar;
     private MainContract.IPresenter mPresenter;
@@ -87,12 +85,15 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
         }
         activateToolbar();
         initNavigation();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbarTop.setOutlineProvider(null);
-        }
-
         initSpinnerListener();
         initLoadMoreListener();
+        mRefreshLayout.setProgressViewOffset(true, 0, Utils.dpToPx(80f));
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mPresenter.reLoad(MANGA_URL);
+            }
+        });
         mPresenter = new Presenter();
         mPresenter.attachView(this);
         mPresenter.load(MANGA_URL);
@@ -244,12 +245,12 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
 
     @Override
     public void showProgress() {
-        pbLoading.setVisibility(View.VISIBLE);
+        mRefreshLayout.setRefreshing(true);
     }
 
     @Override
     public void hideProgress() {
-        pbLoading.setVisibility(View.GONE);
+        mRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -279,13 +280,12 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
     }
 
     @OnClick(R.id.toolbar_home)
-    public void onClickHome(){
-        Toast.makeText(this,"Bạn đang ở màn hình chính",Toast.LENGTH_SHORT).show();
+    public void onClickHome() {
+        Toast.makeText(this, "Bạn đang ở màn hình chính", Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.toolbar_favorite)
-    public void onClickFavorite()
-    {
+    public void onClickFavorite() {
         Intent intent = new Intent(this, FavoriteActivity.class);
         startActivity(intent);
     }
@@ -314,8 +314,7 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
     }
 
     @OnClick(R.id.toolbar_change_mode)
-    public void onClickChangeMode()
-    {
+    public void onClickChangeMode() {
         startActivity(new Intent(this, MainEbookActivity.class));
     }
 

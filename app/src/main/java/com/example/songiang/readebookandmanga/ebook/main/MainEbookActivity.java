@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -44,12 +45,12 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
     private String EBOOK_URL;
     @BindView(R.id.rc_ebook)
     RecyclerView mRcEbook;
-    @BindView(R.id.pb_loading)
-    ProgressBar pbLoading;
     @BindView(R.id.tb_spinner)
     Spinner mSpinner;
     @BindView(R.id.edt_search)
     EditText edtSearch;
+    @BindView(R.id.refresh_layout)
+    SwipeRefreshLayout mRefreshLayout;
     private boolean isLoaded;
     private EbookAdapter mAdapter;
     private MainPresenter mPresenter;
@@ -57,6 +58,13 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
     private int mPageIndex = 1;
     private boolean isLoading = true;
     private LinearLayoutManager linearLayoutManager;
+
+    private SwipeRefreshLayout.OnRefreshListener mRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            mPresenter.reLoad(EBOOK_URL);
+        }
+    };
 
 
     @Override
@@ -67,6 +75,8 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
         initNavigation();
         initSpinnerListener();
         initLoadMoreListener();
+        mRefreshLayout.setOnRefreshListener(mRefreshListener);
+        mRefreshLayout.setProgressViewOffset(true, 0, Utils.dpToPx(80f));
         mPresenter = new MainPresenter();
         mPresenter.attachView(this);
         mPresenter.load(EBOOK_URL);
@@ -265,12 +275,12 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
 
     @Override
     public void showProgress() {
-        pbLoading.setVisibility(View.VISIBLE);
+        mRefreshLayout.setRefreshing(true);
     }
 
     @Override
     public void hideProgress() {
-        pbLoading.setVisibility(View.GONE);
+        mRefreshLayout.setRefreshing(false);
     }
 
     @OnClick(R.id.toolbar_nav)
@@ -306,8 +316,7 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
 
 
     @OnClick(R.id.toolbar_favorite)
-    public void onClickFavorite()
-    {
+    public void onClickFavorite() {
         Intent intent = new Intent(this, FavoriteEbookActivity.class);
         startActivity(intent);
     }

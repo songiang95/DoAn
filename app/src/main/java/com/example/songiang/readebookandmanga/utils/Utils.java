@@ -6,24 +6,21 @@ import android.view.inputmethod.InputMethodManager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.songiang.readebookandmanga.model.Comic;
+import com.example.songiang.readebookandmanga.model.Ebook;
 import com.orhanobut.hawk.Hawk;
 
 public class Utils {
 
 
-
-
-
-
-
-    public static boolean isFavorited(Comic comic){
-        boolean bool = Hawk.get(comic.getName(),false);
+    public static boolean isFavorited(Comic comic) {
+        boolean bool = Hawk.get(comic.getName(), false);
         return bool;
     }
 
-
-
-
+    public static boolean isFavorited(Ebook ebook) {
+        boolean bool = Hawk.get(ebook.getTitle(), false);
+        return bool;
+    }
 
 
     public static void showKeyboard(AppCompatActivity activity) {

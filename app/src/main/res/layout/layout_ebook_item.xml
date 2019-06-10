@@ -78,14 +78,16 @@
                 android:id="@+id/btn_read"
                 android:layout_width="60dp"
                 android:layout_height="match_parent"
+                android:background="@drawable/ebook_item_btn_bg"
                 android:text="@string/btn_read_ebook" />
 
             <ImageView
-                android:padding="8dp"
                 android:id="@+id/iv_favorite"
-                android:layout_width="40dp"
+                android:layout_width="60dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="20dp"
+                android:background="@drawable/ebook_item_btn_bg"
+                android:padding="10dp"
                 android:src="@drawable/ic_favorite_gray_24dp" />
 
         </LinearLayout>

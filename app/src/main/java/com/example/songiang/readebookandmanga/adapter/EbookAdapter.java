@@ -13,11 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.songiang.readebookandmanga.R;
+import com.example.songiang.readebookandmanga.database.Repository;
 import com.example.songiang.readebookandmanga.ebook.reading.ReadEbookActivity;
 import com.example.songiang.readebookandmanga.model.Ebook;
+import com.example.songiang.readebookandmanga.utils.Utils;
 import com.makeramen.roundedimageview.RoundedImageView;
-
-import org.w3c.dom.Text;
+import com.orhanobut.hawk.Hawk;
 
 import java.util.List;
 
@@ -51,10 +52,15 @@ public class EbookAdapter extends RecyclerView.Adapter<EbookAdapter.MyEbookViewH
         final Ebook ebook = data.get(position);
         if (ebook != null) {
             Glide.with(mContext)
-                    .load(ebook.getmCover())
+                    .load(ebook.getCover())
                     .into(holder.ivBookCover);
-            holder.tvBookTitle.setText(ebook.getmTitle());
-            holder.tvAuthor.setText(ebook.getmAuthorName());
+            holder.tvBookTitle.setText(ebook.getTitle());
+            holder.tvAuthor.setText(ebook.getAuthorName());
+            if (Utils.isFavorited(ebook)) {
+                Glide.with(holder.itemView).load(R.drawable.ic_favorite_red_24dp).into(holder.ivFavorite);
+            } else {
+                Glide.with(holder.itemView).load(R.drawable.ic_favorite_gray_24dp).into(holder.ivFavorite);
+            }
             // holder.tvBookType.setText(ebook.getmBookType());
         }
     }
@@ -72,8 +78,8 @@ public class EbookAdapter extends RecyclerView.Adapter<EbookAdapter.MyEbookViewH
         TextView tvBookTitle;
         @BindView(R.id.tv_book_author)
         TextView tvAuthor;
-        @BindView(R.id.tv_book_type)
-        TextView tvBookType;
+        @BindView(R.id.iv_favorite)
+        ImageView ivFavorite;
 
         public MyEbookViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -83,13 +89,34 @@ public class EbookAdapter extends RecyclerView.Adapter<EbookAdapter.MyEbookViewH
         @OnClick(R.id.btn_read)
         public void onClickRead() {
             Intent intent = new Intent(mContext, ReadEbookActivity.class);
-            intent.putExtra(EXTRA_PDF, data.get(getAdapterPosition()).getmPdfLink());
+            intent.putExtra(EXTRA_PDF, data.get(getAdapterPosition()).getPdfLink());
             mContext.startActivity(intent);
         }
 
         @OnClick(R.id.iv_favorite)
         public void onClickFavorite() {
-
+            final Ebook ebook = data.get(getAdapterPosition());
+            if (!Utils.isFavorited(ebook)) {
+                new Thread() {
+                    @Override
+                    public void run() {
+                        Repository repository = new Repository(mContext);
+                        repository.getFavoriteEbookDao().insertEbookFavorite(ebook);
+                    }
+                }.start();
+                Hawk.put(ebook.getTitle(), true);
+                Glide.with(itemView).load(R.drawable.ic_favorite_red_24dp).into(ivFavorite);
+            } else {
+                new Thread() {
+                    @Override
+                    public void run() {
+                        Repository repository = new Repository(mContext);
+                        repository.getFavoriteEbookDao().deleteFavoriteEbook(ebook);
+                    }
+                }.start();
+                Hawk.put(ebook.getTitle(), false);
+                Glide.with(itemView).load(R.drawable.ic_favorite_gray_24dp).into(ivFavorite);
+            }
         }
     }
 

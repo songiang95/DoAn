@@ -76,7 +76,7 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_comic);
         ButterKnife.bind(this);
 
         Fresco.initialize(this);

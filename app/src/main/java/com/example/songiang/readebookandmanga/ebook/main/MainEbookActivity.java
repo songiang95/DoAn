@@ -24,6 +24,7 @@ import com.example.songiang.readebookandmanga.R;
 import com.example.songiang.readebookandmanga.adapter.EbookAdapter;
 import com.example.songiang.readebookandmanga.comic.main.MainActivity;
 import com.example.songiang.readebookandmanga.comic.search.SearchActivity;
+import com.example.songiang.readebookandmanga.ebook.favorite.FavoriteEbookActivity;
 import com.example.songiang.readebookandmanga.ebook.search.SearchEbookActivity;
 import com.example.songiang.readebookandmanga.model.Ebook;
 import com.example.songiang.readebookandmanga.utils.Constant;
@@ -303,6 +304,13 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
         }
     }
 
+
+    @OnClick(R.id.toolbar_favorite)
+    public void onClickFavorite()
+    {
+        Intent intent = new Intent(this, FavoriteEbookActivity.class);
+        startActivity(intent);
+    }
 
     @OnClick(R.id.toolbar_change_mode)
     public void onClickChangeMode() {

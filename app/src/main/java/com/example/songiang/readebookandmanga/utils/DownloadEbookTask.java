@@ -14,7 +14,6 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 import java.util.concurrent.ThreadPoolExecutor;
 
 
@@ -55,8 +54,8 @@ public class DownloadEbookTask extends AsyncTask<String, Void, Void> implements 
 
                         }
                         if (imgSubject != null) {
-                            ebook.setmCover(imgSubject.attr("src"));
-                            ebook.setmTitle(imgSubject.attr("alt"));
+                            ebook.setCover(imgSubject.attr("src"));
+                            ebook.setTitle(imgSubject.attr("alt"));
                         }
 
                     }
@@ -125,10 +124,10 @@ public class DownloadEbookTask extends AsyncTask<String, Void, Void> implements 
                             Element authorSubject = element.getElementsByTag("h5").first();
                             Element pdfSubject = element.getElementsByClass("btn-danger").first();
                             if (authorSubject != null) {
-                                mEbook.setmAuthorName(authorSubject.text());
+                                mEbook.setAuthorName(authorSubject.text());
                             }
                             if (pdfSubject != null) {
-                                mEbook.setmPdfLink(pdfSubject.attr("href"));
+                                mEbook.setPdfLink(pdfSubject.attr("href"));
                             }
                             data.add(mEbook);
                             executors.getMainThread().execute(new Runnable() {
@@ -172,10 +171,10 @@ public class DownloadEbookTask extends AsyncTask<String, Void, Void> implements 
                         Element authorSubject = element.getElementsByTag("h5").first();
                         Element pdfSubject = element.getElementsByClass("btn-danger").first();
                         if (authorSubject != null) {
-                            ebook.setmAuthorName(authorSubject.text());
+                            ebook.setAuthorName(authorSubject.text());
                         }
                         if (pdfSubject != null) {
-                            ebook.setmPdfLink(pdfSubject.attr("href"));
+                            ebook.setPdfLink(pdfSubject.attr("href"));
                         }
                         data.add(ebook);
                         if (isCancelled()) {

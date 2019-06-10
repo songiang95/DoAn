@@ -2,22 +2,22 @@ package com.example.songiang.readebookandmanga.database;
 
 import android.content.Context;
 
-import com.example.songiang.readebookandmanga.comic.main.MainContract;
-import com.example.songiang.readebookandmanga.database.favorite.FavoriteDAO;
-import com.example.songiang.readebookandmanga.model.Comic;
-
-import java.util.List;
-
 public class Repository {
 
-    private FavoriteDAO favoriteDAO;
+    private FavoriteComicDao favoriteComicDao;
+    private FavoriteEbookDao favoriteEbookDao;
 
     public Repository(Context context) {
         AppDatabase db = AppDatabase.getInstance(context);
-        favoriteDAO = db.favoriteDAO();
+        favoriteComicDao = db.favoriteComicDao();
+        favoriteEbookDao = db.favoriteEbookDao();
     }
 
-    public FavoriteDAO getFavoriteDAO() {
-        return favoriteDAO;
+    public FavoriteComicDao getFavoriteComicDao() {
+        return favoriteComicDao;
+    }
+
+    public FavoriteEbookDao getFavoriteEbookDao() {
+        return favoriteEbookDao;
     }
 }

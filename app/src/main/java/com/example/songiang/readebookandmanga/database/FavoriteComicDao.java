@@ -1,4 +1,4 @@
-package com.example.songiang.readebookandmanga.database.favorite;
+package com.example.songiang.readebookandmanga.database;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -12,15 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Dao
-public interface FavoriteDAO {
+public interface FavoriteComicDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertComicFavorite(Comic comic);
 
     @Delete
-    void deleteFavoriteGrammar(Comic comic);
+    void deleteFavoriteComic(Comic comic);
 
-    @Query("SELECT * FROM favorite")
+    @Query("SELECT * FROM favorite_comic")
     List<Comic> getAllFavoriteComic();
 
 

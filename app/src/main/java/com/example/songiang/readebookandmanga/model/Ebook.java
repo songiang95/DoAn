@@ -1,14 +1,31 @@
 package com.example.songiang.readebookandmanga.model;
 
-public class Ebook {
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
+@Entity(tableName = "favorite_ebook")
+public class Ebook {
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "id")
     private String mTitle;
+    @ColumnInfo(name = "author")
     private String mAuthorName;
-    private String mDescription;
-    private String mBookType;
-    private String mCover;
-    private String mUrl;
+    @ColumnInfo(name = "pdf")
     private String mPdfLink;
+    @ColumnInfo(name = "cover")
+    private String mCover;
+
+    @Ignore
+    private String mDescription;
+    @Ignore
+    private String mBookType;
+    @Ignore
+    private String mUrl;
+
 
     public Ebook() {
     }
@@ -23,27 +40,27 @@ public class Ebook {
         this.mPdfLink = pdflink;
     }
 
-    public String getmPdfLink() {
+    public String getPdfLink() {
         return mPdfLink;
     }
 
-    public void setmPdfLink(String mPdfLink) {
+    public void setPdfLink(String mPdfLink) {
         this.mPdfLink = mPdfLink;
     }
 
-    public String getmTitle() {
+    public String getTitle() {
         return mTitle;
     }
 
-    public void setmTitle(String mTitle) {
+    public void setTitle(String mTitle) {
         this.mTitle = mTitle;
     }
 
-    public String getmAuthorName() {
+    public String getAuthorName() {
         return mAuthorName;
     }
 
-    public void setmAuthorName(String mAuthorName) {
+    public void setAuthorName(String mAuthorName) {
         this.mAuthorName = mAuthorName;
     }
 
@@ -63,11 +80,11 @@ public class Ebook {
         this.mBookType = mBookType;
     }
 
-    public String getmCover() {
+    public String getCover() {
         return mCover;
     }
 
-    public void setmCover(String mCover) {
+    public void setCover(String mCover) {
         this.mCover = mCover;
     }
 

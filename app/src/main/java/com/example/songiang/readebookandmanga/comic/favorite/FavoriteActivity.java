@@ -13,7 +13,6 @@ import android.widget.Toast;
 import com.example.songiang.readebookandmanga.R;
 import com.example.songiang.readebookandmanga.adapter.ComicAdapter;
 import com.example.songiang.readebookandmanga.comic.detail.DetailActivity;
-import com.example.songiang.readebookandmanga.comic.main.MainActivity;
 import com.example.songiang.readebookandmanga.database.Repository;
 import com.example.songiang.readebookandmanga.model.Comic;
 import com.example.songiang.readebookandmanga.utils.Constant;
@@ -35,7 +34,7 @@ public class FavoriteActivity extends AppCompatActivity implements ComicAdapter.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_favorite);
+        setContentView(R.layout.activity_favorite_comic);
         ButterKnife.bind(this);
         rcFavorite.setLayoutManager(new GridLayoutManager(this, 3));
 
@@ -47,7 +46,7 @@ public class FavoriteActivity extends AppCompatActivity implements ComicAdapter.
         @Override
         protected Void doInBackground(Void... voids) {
             Repository repository = new Repository(getApplicationContext());
-            dataFavorite = (ArrayList) repository.getFavoriteDAO().getAllFavoriteComic();
+            dataFavorite = (ArrayList) repository.getFavoriteComicDao().getAllFavoriteComic();
             return null;
         }
 

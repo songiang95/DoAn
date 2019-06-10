@@ -4,7 +4,6 @@ import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -17,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.Target;
 import com.example.songiang.readebookandmanga.R;
 import com.example.songiang.readebookandmanga.adapter.ChapterAdapter;
 import com.example.songiang.readebookandmanga.comic.favorite.FavoriteActivity;
@@ -167,7 +165,7 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
                 @Override
                 public void run() {
                     Repository repository = new Repository(getApplicationContext());
-                    repository.getFavoriteDAO().insertComicFavorite(comic);
+                    repository.getFavoriteComicDao().insertComicFavorite(comic);
                 }
             }.start();
             Hawk.put(comic.getName(),true);
@@ -178,7 +176,7 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
                 @Override
                 public void run() {
                     Repository repository = new Repository(getApplicationContext());
-                    repository.getFavoriteDAO().deleteFavoriteGrammar(comic);
+                    repository.getFavoriteComicDao().deleteFavoriteComic(comic);
                 }
             }.start();
             Hawk.put(comic.getName(),false);

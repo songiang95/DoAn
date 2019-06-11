@@ -13,6 +13,7 @@
     <string name="btn_read_ebook">Đọc</string>
     <string name="favorite">Favorites</string>
     <string name="error_image">Ảnh lỗi</string>
+    <string name="download">Bắt đầu tải</string>
 
     <string-array name="comic_type">
         <item>Mới cập nhập</item>

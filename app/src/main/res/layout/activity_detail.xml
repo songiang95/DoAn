@@ -32,7 +32,7 @@
 
 
             <LinearLayout
-                android:id="@+id/rl_top"
+                android:id="@+id/ll_top"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -125,7 +125,7 @@
                 android:id="@+id/recycle_chap_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/rl_top"
+                android:layout_below="@+id/ll_top"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="10dp"
@@ -147,6 +147,21 @@
         android:indeterminateDrawable="@drawable/progress_loading"
         android:visibility="gone" />
 
-    <include layout="@layout/bottom_toolbar" />
+    <include
+        android:id="@+id/bottom_toolbar"
+        layout="@layout/bottom_toolbar" />
+
+    <TextView
+        android:textColor="@color/white"
+        android:id="@+id/tv_download"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_toolbar"
+        android:layout_alignParentBottom="true"
+        android:background="@color/black_opacity_80"
+        android:gravity="center"
+        android:text="@string/download"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>

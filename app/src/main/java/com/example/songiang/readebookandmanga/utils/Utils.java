@@ -1,14 +1,21 @@
 package com.example.songiang.readebookandmanga.utils;
 
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.res.Resources;
+import android.net.Uri;
+import android.os.Environment;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.songiang.readebookandmanga.model.Comic;
 import com.example.songiang.readebookandmanga.model.Ebook;
 import com.orhanobut.hawk.Hawk;
+
+import java.io.File;
 
 public class Utils {
 
@@ -48,5 +55,30 @@ public class Utils {
             view = new View(activity);
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public static void writeToDisk(Context context, @NonNull String imageUrl, @NonNull String downloadSubfolder, int chapNumb, int picNumb) {
+        Uri imageUri = Uri.parse(imageUrl);
+        String fileName = chapNumb + "_" + picNumb;
+        DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(imageUri);
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDescription(imageUrl);
+        request.allowScanningByMediaScanner();
+        request.setDestinationUri(getDownloadDestination(downloadSubfolder));
+        request.setTitle(fileName);
+        request.setDestinationInExternalPublicDir(Environment.getExternalStorageDirectory() + File.separator + "ComicDownload" + File.separator + downloadSubfolder,fileName+".jpg");
+        downloadManager.enqueue(request);
+
+    }
+
+    @NonNull
+    private static Uri getDownloadDestination(String downloadSubpath) {
+        File destinationFile = new File(Environment.getExternalStorageDirectory() + File.separator + "ComicDownload" + File.separator + downloadSubpath);
+        boolean success;
+        if (!destinationFile.exists()) {
+            success = destinationFile.mkdirs();
+        }
+        return Uri.fromFile(destinationFile);
     }
 }

@@ -36,8 +36,6 @@ public class DetailPresenter implements DetailContract.IPresenter {
     private class DownloadDetailTask extends AsyncTask<String, Void, Void> {
 
 
-
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -52,7 +50,7 @@ public class DetailPresenter implements DetailContract.IPresenter {
                 Document doc = Jsoup.connect(strings[0]).get();
                 if (doc != null) {
                     Elements chapContainer = doc.select("div.chapter-list");
-                    Elements chapElements= chapContainer.select("div.row");
+                    Elements chapElements = chapContainer.select("div.row");
                     Elements infoElements = doc.select("ul.truyen_info_right");
                     for (Element chap : chapElements) {
                         Element chapSubject = chap.getElementsByTag("a").first();
@@ -60,7 +58,6 @@ public class DetailPresenter implements DetailContract.IPresenter {
                             String title = chapSubject.text();
                             String key = title.substring(title.lastIndexOf(" ") + 1);
                             String value = chapSubject.attr("href");
-                            Log.d("abba", "doInBackground: key: " + key + "| value: " + value);
                             mComic.addChap(key, value);
                         }
                     }
@@ -69,7 +66,6 @@ public class DetailPresenter implements DetailContract.IPresenter {
                         Element infoSubject = info.getElementsByTag("a").first();
                         if (infoSubject != null) {
                             String artist = infoSubject.attr("title");
-                            Log.d("abba", "doInBackground: artist: " + artist);
                             mComic.setArtist(artist);
                         }
                     }
@@ -84,7 +80,7 @@ public class DetailPresenter implements DetailContract.IPresenter {
         @Override
         protected void onPostExecute(Void value) {
             super.onPostExecute(value);
-            if(mView!=null) {
+            if (mView != null) {
                 mView.hideProgress();
                 mView.showContent(mComic);
             }

@@ -82,7 +82,6 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.DetailVi
                 if (mListener != null)
                     mListener.onItemClick(v, data.get(getAdapterPosition()), getAdapterPosition());
             } else {
-                // TODO: 6/11/2019 select multiple item
                 if (!isSelected) {
                     isSelected = true;
                     dataSelected.put(getAdapterPosition() + 1, data.get(getAdapterPosition()));
@@ -90,7 +89,7 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.DetailVi
                 } else {
                     isSelected = false;
                     dataSelected.remove(getAdapterPosition()+1);
-                    v.setBackgroundColor(Color.TRANSPARENT);
+                    v.setBackgroundResource(R.drawable.ripple_chap_item);
                 }
             }
         }

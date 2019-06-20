@@ -1,5 +1,9 @@
 package com.example.songiang.readebookandmanga.utils;
 
+import android.os.Environment;
+
+import java.io.File;
+
 public class Constant {
 
     public final static String MANGAK_NEW = "http://mangak.info/moi-cap-nhat/";
@@ -42,4 +46,6 @@ public class Constant {
     public static final String PREF_CONTINUE_CHAP_URL = "continue url";
     public static final String PREF_FAVORITED = "favorite";
     public static final String EXTRA_COMIC = "comic";
+
+    public static final String DOWNLOAD_DIR_PATH = Environment.getExternalStorageDirectory() + File.separator + "ComicDownload" + File.separator;
 }

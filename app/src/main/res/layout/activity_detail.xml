@@ -158,7 +158,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottom_toolbar"
         android:layout_alignParentBottom="true"
-        android:background="@color/black_opacity_80"
+        android:background="@drawable/bg_start_download"
         android:gravity="center"
         android:text="@string/download"
         android:textSize="20sp"

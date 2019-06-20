@@ -21,9 +21,8 @@ public class DownloadImageTask extends AsyncTask<String, Void, Void> {
         mCallback = callBack;
         data = new ArrayList<>();
     }
-    public DownloadImageTask(int chapterNumb, CallBack callBack)
+    public DownloadImageTask(int chapterNumb)
     {
-        mCallback = callBack;
         data = new ArrayList<>();
         this.chapterNumb = chapterNumb;
     }
@@ -68,5 +67,9 @@ public class DownloadImageTask extends AsyncTask<String, Void, Void> {
 
     public interface CallBack{
         void onDownloadFinish(List<String> data, int chapterNumb);
+    }
+
+    public void setCallback(CallBack mCallback) {
+        this.mCallback = mCallback;
     }
 }

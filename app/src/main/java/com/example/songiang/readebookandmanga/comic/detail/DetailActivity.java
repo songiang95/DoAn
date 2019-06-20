@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +28,12 @@ import android.widget.Toast;
 
 import com.artjimlop.altex.AltexImageDownloader;
 import com.bumptech.glide.Glide;
+import com.downloader.Error;
+import com.downloader.OnCancelListener;
+import com.downloader.OnDownloadListener;
+import com.downloader.OnPauseListener;
+import com.downloader.OnStartOrResumeListener;
+import com.downloader.PRDownloader;
 import com.example.songiang.readebookandmanga.R;
 import com.example.songiang.readebookandmanga.adapter.ChapterAdapter;
 import com.example.songiang.readebookandmanga.comic.favorite.FavoriteActivity;
@@ -38,6 +45,8 @@ import com.example.songiang.readebookandmanga.comic.reading.ReadComicActivity;
 import com.example.songiang.readebookandmanga.utils.Constant;
 import com.example.songiang.readebookandmanga.utils.DownloadImageTask;
 import com.example.songiang.readebookandmanga.utils.Utils;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.orhanobut.hawk.Hawk;
 
@@ -50,7 +59,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class DetailActivity extends AppCompatActivity implements DetailContract.IView, ChapterAdapter.OnItemClickListener, DownloadImageTask.CallBack {
+public class DetailActivity extends AppCompatActivity implements DetailContract.IView, ChapterAdapter.OnItemClickListener {
 
     @BindView(R.id.pb_loading)
     ProgressBar pbLoading;
@@ -187,55 +196,112 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
         llComicInfo.setVisibility(View.GONE);
         mTvDownload.setVisibility(View.VISIBLE);
         chapterAdapter.setItemSelection(true);
+        TedPermission.with(this)
+                .setPermissionListener(permissionListener)
+                .setDeniedMessage("Nếu từ chối cấp quyền, bạn sẽ không thể download")
+                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE)
+                .check();
+        PRDownloader.initialize(getApplicationContext());
     }
+
+    private PermissionListener permissionListener = new PermissionListener() {
+        @Override
+        public void onPermissionGranted() {
+
+        }
+
+        @Override
+        public void onPermissionDenied(List<String> deniedPermissions) {
+
+        }
+    };
+
+    private DownloadImageTask.CallBack mCallback = new DownloadImageTask.CallBack() {
+        @Override
+        public void onDownloadFinish(final List<String> data, int chapterNumb) {
+            for(final String url:data){
+                int downloadId = PRDownloader.download(url,Constant.DOWNLOAD_DIR_PATH+comic.getName(),chapterNumb+"_"+data.indexOf(url)+".jpg")
+                        .build()
+                        .setOnStartOrResumeListener(new OnStartOrResumeListener() {
+                            @Override
+                            public void onStartOrResume() {
+                            }
+                        })
+                        .setOnPauseListener(new OnPauseListener() {
+                            @Override
+                            public void onPause() {
+                                Toast.makeText(DetailActivity.this,"Tạm dừng tải xuống",Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setOnCancelListener(new OnCancelListener() {
+                            @Override
+                            public void onCancel() {
+                                Toast.makeText(DetailActivity.this,"Hủy tải xuống",Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .start(new OnDownloadListener() {
+                            @Override
+                            public void onDownloadComplete() {
+                                if(data.indexOf(url)==data.size()-1){
+                                }
+                            }
+
+                            @Override
+                            public void onError(Error error) {
+
+                            }
+                        });
+            }
+        }
+    };
 
     @OnClick(R.id.tv_download)
     public void onClickStartDownload() {
         Log.d("abba", "onClickStartDownload: ");
-        if (isReadStorageAllowed()) {
-            Map<Integer, String> selectedList = chapterAdapter.getSelectedItem();
-            for (Integer key : selectedList.keySet()) {
-                new DownloadImageTask(key, this).execute(selectedList.get(key));
-            }
+        Map<Integer, String> selectedList = chapterAdapter.getSelectedItem();
+        for (Integer key : selectedList.keySet()) {
+            DownloadImageTask downloadImageTask = new DownloadImageTask(key);
+            downloadImageTask.setCallback(mCallback);
+            downloadImageTask.execute(selectedList.get(key));
         }
     }
 
-    @Override
-    public void onDownloadFinish(List<String> data, int chapterNumb) {
-        int i = 1;
-        for (String url : data) {
-            Utils.writeToDisk(this,url,comic.getName(),chapterNumb,i);
-            i++;
+//    @Override
+//    public void onDownloadFinish(List<String> data, int chapterNumb) {
+//        int i = 1;
+//        for (String url : data) {
+//            Utils.writeToDisk(this, url, comic.getName(), chapterNumb, i);
+//            i++;
+//
+//        }
+//    }
 
-        }
-    }
+//    private boolean isReadStorageAllowed() {
+//        //Getting the permission status
+//        int result = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+//
+//        //If permission is granted returning true
+//        if (result == PackageManager.PERMISSION_GRANTED)
+//            return true;
+//        else {
+//            requestStoragePermission();
+//            return true;
+//        }
+//        //If permission is not granted returning false
+//
+//    }
 
-    private boolean isReadStorageAllowed() {
-        //Getting the permission status
-        int result = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        //If permission is granted returning true
-        if (result == PackageManager.PERMISSION_GRANTED)
-            return true;
-        else {
-            requestStoragePermission();
-            return true;
-        }
-        //If permission is not granted returning false
-
-    }
-
-    private void requestStoragePermission() {
-
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            //If the user has denied the permission previously your code will come to this block
-            //Here you can explain why you need this permission
-            //Explain here why you need this permission
-        }
-
-        //And finally ask for the permission
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
-    }
+//    private void requestStoragePermission() {
+//
+//        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//            //If the user has denied the permission previously your code will come to this block
+//            //Here you can explain why you need this permission
+//            //Explain here why you need this permission
+//        }
+//
+//        //And finally ask for the permission
+//        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+//    }
 
 
     @OnClick(R.id.toolbar_change_mode)

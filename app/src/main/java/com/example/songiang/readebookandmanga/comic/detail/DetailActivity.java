@@ -2,6 +2,9 @@ package com.example.songiang.readebookandmanga.comic.detail;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 
@@ -32,8 +35,10 @@ import com.downloader.Error;
 import com.downloader.OnCancelListener;
 import com.downloader.OnDownloadListener;
 import com.downloader.OnPauseListener;
+import com.downloader.OnProgressListener;
 import com.downloader.OnStartOrResumeListener;
 import com.downloader.PRDownloader;
+import com.downloader.Progress;
 import com.example.songiang.readebookandmanga.R;
 import com.example.songiang.readebookandmanga.adapter.ChapterAdapter;
 import com.example.songiang.readebookandmanga.comic.favorite.FavoriteActivity;
@@ -52,6 +57,7 @@ import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -86,21 +92,8 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
     public static final String EXTRA_URL = "url";
     private Comic comic;
     private ChapterAdapter chapterAdapter;
-//    private final AltexImageDownloader downloader = new AltexImageDownloader(new AltexImageDownloader.OnImageLoaderListener() {
-//        @Override
-//        public void onError(AltexImageDownloader.ImageError error) {
-//            Log.d("abba", "onError: ");
-//        }
-//
-//        @Override
-//        public void onProgressChange(int percent) {
-//        }
-//
-//        @Override
-//        public void onComplete(Bitmap result) {
-//            Log.d("abba", "onComplete: ");
-//        }
-//    });
+    private NotificationManager mNotificationManager;
+
 
     private int STORAGE_PERMISSION_CODE = 23;
 
@@ -199,7 +192,7 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
         TedPermission.with(this)
                 .setPermissionListener(permissionListener)
                 .setDeniedMessage("Nếu từ chối cấp quyền, bạn sẽ không thể download")
-                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE)
+                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
                 .check();
         PRDownloader.initialize(getApplicationContext());
     }
@@ -215,12 +208,19 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
 
         }
     };
-
+    public static int sProgress = 1;
     private DownloadImageTask.CallBack mCallback = new DownloadImageTask.CallBack() {
         @Override
-        public void onDownloadFinish(final List<String> data, int chapterNumb) {
-            for(final String url:data){
-                int downloadId = PRDownloader.download(url,Constant.DOWNLOAD_DIR_PATH+comic.getName(),chapterNumb+"_"+data.indexOf(url)+".jpg")
+        public void onDownloadFinish(final List<String> data, final int chapterNumb) {
+            sProgress = 1;
+            mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            final Notification.Builder mNotification = new Notification.Builder(DetailActivity.this)
+                    .setContentTitle("Đang tải xuống...")
+                    .setSmallIcon(R.drawable.ic_favorite_red_24dp);
+            final int notification_id = (int)System.currentTimeMillis();
+
+            for (final String url : data) {
+                int downloadId = PRDownloader.download(url, Constant.DOWNLOAD_DIR_PATH + comic.getName(), chapterNumb + "_" + data.indexOf(url) + ".jpg")
                         .build()
                         .setOnStartOrResumeListener(new OnStartOrResumeListener() {
                             @Override
@@ -230,19 +230,27 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
                         .setOnPauseListener(new OnPauseListener() {
                             @Override
                             public void onPause() {
-                                Toast.makeText(DetailActivity.this,"Tạm dừng tải xuống",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(DetailActivity.this, "Tạm dừng tải xuống", Toast.LENGTH_SHORT).show();
                             }
                         })
                         .setOnCancelListener(new OnCancelListener() {
                             @Override
                             public void onCancel() {
-                                Toast.makeText(DetailActivity.this,"Hủy tải xuống",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(DetailActivity.this, "Hủy tải xuống", Toast.LENGTH_SHORT).show();
                             }
                         })
                         .start(new OnDownloadListener() {
                             @Override
                             public void onDownloadComplete() {
-                                if(data.indexOf(url)==data.size()-1){
+                                if (sProgress == data.size()) {
+                                    mNotification.setContentTitle("Đã tải xong")
+                                            .setContentText("Đã tải xong truyện " + comic.getName() + " tập " + chapterNumb)
+                                            .setProgress(0, 0, false);
+                                    mNotificationManager.notify(notification_id, mNotification.build());
+                                } else {
+                                    mNotification.setProgress(data.size(), sProgress, false);
+                                    mNotificationManager.notify(notification_id, mNotification.build());
+                                    sProgress++;
                                 }
                             }
 
@@ -257,7 +265,8 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
 
     @OnClick(R.id.tv_download)
     public void onClickStartDownload() {
-        Log.d("abba", "onClickStartDownload: ");
+
+
         Map<Integer, String> selectedList = chapterAdapter.getSelectedItem();
         for (Integer key : selectedList.keySet()) {
             DownloadImageTask downloadImageTask = new DownloadImageTask(key);

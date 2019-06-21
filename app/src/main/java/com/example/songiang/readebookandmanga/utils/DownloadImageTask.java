@@ -58,7 +58,6 @@ public class DownloadImageTask extends AsyncTask<String, Void, Void> {
     @Override
     protected void onPostExecute(Void v) {
         super.onPostExecute(v);
-        Log.d("abba", "onPostExecute: ");
         if(mCallback!=null)
         {
             mCallback.onDownloadFinish(data,chapterNumb);

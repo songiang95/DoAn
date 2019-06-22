@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -172,6 +173,22 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
         startActivity(intent);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mTvDownload.getVisibility() == View.VISIBLE) {
+            mTvDownload.setVisibility(View.GONE);
+            mBotToolbar.setVisibility(View.VISIBLE);
+            llComicInfo.setVisibility(View.VISIBLE);
+            if (chapterAdapter != null) {
+                chapterAdapter.setItemSelection(false);
+                chapterAdapter.notifyDataSetChanged();
+                chapterAdapter.clearSelectedItem();
+            }
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     @OnClick(R.id.iv_download)
     public void onClickSelectToDownload() {
         mBotToolbar.setVisibility(View.GONE);
@@ -201,9 +218,11 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
         @Override
         public void onDownloadFinish(final List<String> data, final int chapterNumb) {
             mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            final Notification.Builder mNotification = new Notification.Builder(DetailActivity.this)
-                    .setContentTitle("Đang tải xuống...")
+            final NotificationCompat.Builder mNotification = new NotificationCompat.Builder(DetailActivity.this, "M_CH_ID")
+                    .setContentTitle("Đã tải xong")
+                    .setContentText("Đã tải xong truyện " + comic.getName() + " tập " + chapterNumb)
                     .setSmallIcon(R.drawable.ic_favorite_red_24dp);
+
             final int notification_id = (int) System.currentTimeMillis();
             int i = 1;
             for (final String url : data) {
@@ -231,9 +250,6 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
                             @Override
                             public void onDownloadComplete() {
                                 if (progress == data.size()) {
-                                    mNotification.setContentTitle("Đã tải xong")
-                                            .setContentText("Đã tải xong truyện " + comic.getName() + " tập " + chapterNumb)
-                                            .setProgress(0, 0, false);
                                     mNotificationManager.notify(notification_id, mNotification.build());
                                 }
 
@@ -242,8 +258,7 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
                             @Override
                             public void onError(Error error) {
                                 mNotification.setContentTitle("Lỗi")
-                                        .setContentText("Tải xuống không thành công")
-                                        .setProgress(0, 0, false);
+                                        .setContentText("Tải xuống không thành công");
                                 mNotificationManager.notify(notification_id, mNotification.build());
                             }
                         });
@@ -253,13 +268,15 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
 
     @OnClick(R.id.tv_download)
     public void onClickStartDownload() {
-
-
         Map<Integer, String> selectedList = chapterAdapter.getSelectedItem();
-        for (Integer key : selectedList.keySet()) {
-            DownloadImageTask downloadImageTask = new DownloadImageTask(key);
-            downloadImageTask.setCallback(mCallback);
-            downloadImageTask.execute(selectedList.get(key));
+        if (selectedList.isEmpty()) {
+            Toast.makeText(this, "Vui lòng chọn tập truyện để tải xuống", Toast.LENGTH_SHORT).show();
+        } else {
+            for (Integer key : selectedList.keySet()) {
+                DownloadImageTask downloadImageTask = new DownloadImageTask(key);
+                downloadImageTask.setCallback(mCallback);
+                downloadImageTask.execute(selectedList.get(key));
+            }
         }
     }
 

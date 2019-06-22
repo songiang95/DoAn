@@ -48,6 +48,10 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.DetailVi
         return dataSelected;
     }
 
+    public void clearSelectedItem() {
+        dataSelected.clear();
+    }
+
     @NonNull
     @Override
     public DetailViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -62,7 +66,7 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.DetailVi
         final String url = data.get(i);
         if (url != null) {
             detailViewHolder.tvChapNumb.setText(Integer.toString(i + 1));
-            if (Hawk.get(Constant.PREF_CONTINUE_CHAP_NUMB + mComic.getName(), 0) - 1 == i) {
+            if (Hawk.get(Constant.PREF_CONTINUE_CHAP_NUMB + mComic.getName(), 0) - 1 == i && !isSelectionMode) {
                 detailViewHolder.frChapter.setBackgroundResource(R.drawable.ripple_chap_item_clicked);
             } else {
                 detailViewHolder.frChapter.setBackgroundResource(R.drawable.ripple_chap_item);

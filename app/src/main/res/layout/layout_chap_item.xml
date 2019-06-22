@@ -5,6 +5,7 @@
     android:layout_margin="5dp"
     android:clickable="true"
     android:focusable="true"
+    android:id="@+id/fr_chapter"
     android:background="@drawable/ripple_chap_item">
 
     <TextView

@@ -100,6 +100,9 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
 
     @Override
     protected void onResume() {
+        if (chapterAdapter != null) {
+            chapterAdapter.notifyDataSetChanged();
+        }
         super.onResume();
         int chapNumbContinue = Hawk.get(Constant.PREF_CONTINUE_CHAP_NUMB + comic.getName(), 1);
         tvContinue.setText("Read " + chapNumbContinue);
@@ -123,7 +126,7 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
                 .load(comic.getImage())
                 .centerCrop()
                 .into(ivCover);
-        chapterAdapter = new ChapterAdapter(listChap, this);
+        chapterAdapter = new ChapterAdapter(listChap, this, comic);
         recyclerView.setAdapter(chapterAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 5));
@@ -150,7 +153,6 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
     @Override
     public void onItemClick(View v, String url, int position) {
         if (url != null) {
-
             Hawk.put(Constant.PREF_CONTINUE_CHAP_NUMB + comic.getName(), position + 1);
             Hawk.put(Constant.PREF_CONTINUE_CHAP_URL + comic.getName(), url);
 

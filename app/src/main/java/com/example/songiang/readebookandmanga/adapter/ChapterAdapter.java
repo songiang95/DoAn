@@ -9,9 +9,11 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.example.songiang.readebookandmanga.R;
+import com.example.songiang.readebookandmanga.model.Comic;
 import com.example.songiang.readebookandmanga.utils.Constant;
 import com.orhanobut.hawk.Hawk;
 
@@ -29,11 +31,13 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.DetailVi
     private OnItemClickListener mListener;
     private boolean isSelectionMode;
     private Map<Integer, String> dataSelected;
+    private Comic mComic;
 
-    public ChapterAdapter(List data, OnItemClickListener listener) {
+    public ChapterAdapter(List data, OnItemClickListener listener, Comic comic) {
         this.data = data;
         mListener = listener;
         dataSelected = new LinkedHashMap();
+        this.mComic = comic;
     }
 
     public void setItemSelection(boolean bool) {
@@ -58,6 +62,11 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.DetailVi
         final String url = data.get(i);
         if (url != null) {
             detailViewHolder.tvChapNumb.setText(Integer.toString(i + 1));
+            if (Hawk.get(Constant.PREF_CONTINUE_CHAP_NUMB + mComic.getName(), 0) - 1 == i) {
+                detailViewHolder.frChapter.setBackgroundResource(R.drawable.ripple_chap_item_clicked);
+            } else {
+                detailViewHolder.frChapter.setBackgroundResource(R.drawable.ripple_chap_item);
+            }
         }
     }
 
@@ -70,6 +79,8 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.DetailVi
 
         @BindView(R.id.tv_chap_number)
         TextView tvChapNumb;
+        @BindView(R.id.fr_chapter)
+        FrameLayout frChapter;
         private boolean isSelected;
 
         public DetailViewHolder(@NonNull View itemView) {

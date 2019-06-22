@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -30,6 +31,8 @@ import com.example.songiang.readebookandmanga.ebook.search.SearchEbookActivity;
 import com.example.songiang.readebookandmanga.model.Ebook;
 import com.example.songiang.readebookandmanga.utils.Constant;
 import com.example.songiang.readebookandmanga.utils.Utils;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 import com.yarolegovich.slidingrootnav.SlidingRootNav;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
 
@@ -58,7 +61,17 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
     private int mPageIndex = 1;
     private boolean isLoading = true;
     private LinearLayoutManager linearLayoutManager;
+    private PermissionListener permissionListener = new PermissionListener() {
+        @Override
+        public void onPermissionGranted() {
 
+        }
+
+        @Override
+        public void onPermissionDenied(List<String> deniedPermissions) {
+
+        }
+    };
     private SwipeRefreshLayout.OnRefreshListener mRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
@@ -80,8 +93,16 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
         mPresenter = new MainPresenter();
         mPresenter.attachView(this);
         mPresenter.load(EBOOK_URL);
+        acceptPermission();
     }
 
+    private void acceptPermission() {
+        TedPermission.with(this)
+                .setPermissionListener(permissionListener)
+                .setDeniedMessage("Nếu từ chối cấp quyền, bạn sẽ không thể download")
+                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                .check();
+    }
 
     @Override
     protected void onResume() {

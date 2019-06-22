@@ -1,6 +1,7 @@
 package com.example.songiang.readebookandmanga.utils;
 
 import android.app.DownloadManager;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -81,4 +82,6 @@ public class Utils {
         }
         return Uri.fromFile(destinationFile);
     }
+
+
 }

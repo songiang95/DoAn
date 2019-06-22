@@ -50,7 +50,6 @@ public class DownloadEbookTask extends AsyncTask<String, Void, Void> implements 
                             ebook.setmUrl(urlSubject.attr("href"));
                             DownloadDetail downloadTask = new DownloadDetail(ebook);
                             threadPoolExecutor.execute(downloadTask);
-                            Log.d(TAG, "doInBackground: add download task");
 
                         }
                         if (imgSubject != null) {

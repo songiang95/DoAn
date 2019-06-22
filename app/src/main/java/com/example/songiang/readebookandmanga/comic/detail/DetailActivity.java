@@ -1,44 +1,31 @@
 package com.example.songiang.readebookandmanga.comic.detail;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.artjimlop.altex.AltexImageDownloader;
 import com.bumptech.glide.Glide;
 import com.downloader.Error;
 import com.downloader.OnCancelListener;
 import com.downloader.OnDownloadListener;
 import com.downloader.OnPauseListener;
-import com.downloader.OnProgressListener;
 import com.downloader.OnStartOrResumeListener;
 import com.downloader.PRDownloader;
-import com.downloader.Progress;
 import com.example.songiang.readebookandmanga.R;
 import com.example.songiang.readebookandmanga.adapter.ChapterAdapter;
 import com.example.songiang.readebookandmanga.comic.favorite.FavoriteActivity;
@@ -57,7 +44,6 @@ import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -220,7 +206,7 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
             final int notification_id = (int)System.currentTimeMillis();
 
             for (final String url : data) {
-                int downloadId = PRDownloader.download(url, Constant.DOWNLOAD_DIR_PATH + comic.getName(), chapterNumb + "_" + data.indexOf(url) + ".jpg")
+                int downloadId = PRDownloader.download(url, Constant.DOWNLOAD_COMIC_DIR_PATH + comic.getName(), chapterNumb + "_" + data.indexOf(url) + ".jpg")
                         .build()
                         .setOnStartOrResumeListener(new OnStartOrResumeListener() {
                             @Override

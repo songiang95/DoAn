@@ -46,7 +46,8 @@ public class Constant {
     public static final String PREF_CONTINUE_CHAP_URL = "continue url";
     public static final String PREF_FAVORITED = "favorite";
     public static final String EXTRA_COMIC = "comic";
-
+    public static final String EXTRA_PDF = "pdf";
+    public static final String DOWNLOAD = "download";
     public static final String DOWNLOAD_COMIC_DIR_PATH = Environment.getExternalStorageDirectory() + File.separator + "ComicDownload" + File.separator;
     public static final String DOWNLOAD_EBOOK_DIR_PATH = Environment.getExternalStorageDirectory() + File.separator + "EbookDownload";
 }

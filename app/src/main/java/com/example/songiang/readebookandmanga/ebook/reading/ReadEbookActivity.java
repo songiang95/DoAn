@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.songiang.readebookandmanga.R;
 import com.example.songiang.readebookandmanga.adapter.EbookAdapter;
+import com.example.songiang.readebookandmanga.utils.Constant;
 
 
 import butterknife.BindView;
@@ -37,7 +38,7 @@ public class ReadEbookActivity extends AppCompatActivity {
         setContentView(R.layout.activity_read_ebook);
         ButterKnife.bind(this);
         Intent intent = getIntent();
-        String pdfUrl = intent.getStringExtra(EbookAdapter.EXTRA_PDF);
+        String pdfUrl = intent.getStringExtra(Constant.EXTRA_PDF);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new MyWebview());
         webView.getSettings().setBuiltInZoomControls(true);

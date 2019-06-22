@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoTitleBar">
-        <activity android:name=".ebook.favorite.FavoriteEbookActivity"></activity>
+        <activity android:name=".ebook.reading.ReadEbookOfflineActivity"></activity>
+        <activity android:name=".ebook.favorite.FavoriteEbookActivity" />
         <activity android:name=".comic.favorite.FavoriteActivity" />
         <activity android:name=".ebook.search.SearchEbookActivity" />
         <activity android:name=".ebook.reading.ReadEbookActivity" />

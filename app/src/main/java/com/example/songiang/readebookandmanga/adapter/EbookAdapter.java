@@ -23,6 +23,7 @@ import com.downloader.Progress;
 import com.example.songiang.readebookandmanga.R;
 import com.example.songiang.readebookandmanga.database.Repository;
 import com.example.songiang.readebookandmanga.ebook.reading.ReadEbookActivity;
+import com.example.songiang.readebookandmanga.ebook.reading.ReadEbookOfflineActivity;
 import com.example.songiang.readebookandmanga.model.Ebook;
 import com.example.songiang.readebookandmanga.utils.Constant;
 import com.example.songiang.readebookandmanga.utils.Utils;
@@ -43,7 +44,7 @@ import android.app.NotificationManager;
 public class EbookAdapter extends RecyclerView.Adapter<EbookAdapter.MyEbookViewHolder> {
 
 
-    public static final String EXTRA_PDF = "pdf";
+
     private List<Ebook> data;
     private Context mContext;
 
@@ -102,9 +103,16 @@ public class EbookAdapter extends RecyclerView.Adapter<EbookAdapter.MyEbookViewH
 
         @OnClick(R.id.btn_read)
         public void onClickRead() {
-            Intent intent = new Intent(mContext, ReadEbookActivity.class);
-            intent.putExtra(EXTRA_PDF, data.get(getAdapterPosition()).getPdfLink());
-            mContext.startActivity(intent);
+            final Ebook ebook = data.get(getAdapterPosition());
+            if (!Utils.isFavorited(ebook)) {
+                Intent intent = new Intent(mContext, ReadEbookActivity.class);
+                intent.putExtra(Constant.EXTRA_PDF, ebook.getPdfLink());
+                mContext.startActivity(intent);
+            } else {
+                Intent intent = new Intent(mContext, ReadEbookOfflineActivity.class);
+                intent.putExtra(Constant.EXTRA_PDF, ebook.getTitle());
+                mContext.startActivity(intent);
+            }
         }
 
 

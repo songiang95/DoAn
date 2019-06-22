@@ -2,19 +2,17 @@ package com.example.songiang.readebookandmanga.comic.main;
 
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
 import com.example.songiang.readebookandmanga.comic.favorite.FavoriteActivity;
 import com.example.songiang.readebookandmanga.comic.search.SearchActivity;
+import com.example.songiang.readebookandmanga.ebook.favorite.FavoriteEbookActivity;
 import com.example.songiang.readebookandmanga.ebook.main.MainEbookActivity;
 import com.example.songiang.readebookandmanga.utils.Utils;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.google.android.material.appbar.AppBarLayout;
 
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -27,7 +25,6 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -75,6 +72,7 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_comic);
+        initNavigation();
         ButterKnife.bind(this);
 
         Fresco.initialize(this);
@@ -84,7 +82,7 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
             Hawk.init(this).build();
         }
         activateToolbar();
-        initNavigation();
+
         initSpinnerListener();
         initLoadMoreListener();
         mRefreshLayout.setProgressViewOffset(true, 0, Utils.dpToPx(80f));
@@ -219,7 +217,7 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
         mSlidingBar = new SlidingRootNavBuilder(this)
                 .withMenuLayout(R.layout.navigation_drawer)
                 .withDragDistance(140) //Horizontal translation of a view. Default == 180dp
-                .withRootViewScale(0.7f) //Content view's scale will be interpolated between 1f and 0.7f. Default == 0.65f;
+                .withRootViewScale(0.5f) //Content view's scale will be interpolated between 1f and 0.7f. Default == 0.65f;
                 .inject();
     }
 
@@ -317,6 +315,13 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
     public void onClickChangeMode() {
         startActivity(new Intent(this, MainEbookActivity.class));
     }
+
+    @OnClick(R.id.ll_read_ebook_offline)
+    public void onClickReadEbookOffline() {
+        Intent intent = new Intent(this, FavoriteEbookActivity.class);
+        startActivity(intent);
+    }
+
 
     @Override
     public void onBackPressed() {

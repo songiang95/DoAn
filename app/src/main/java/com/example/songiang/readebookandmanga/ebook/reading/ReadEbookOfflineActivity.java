@@ -45,6 +45,7 @@ public class ReadEbookOfflineActivity extends AppCompatActivity {
                         Hawk.put(Constant.DOWNLOAD + fileName, page);
                     }
                 })
+                .pageSnap(true)
                 .pageFling(true)
                 .load();
     }

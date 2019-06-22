@@ -8,6 +8,7 @@
     >
 
     <LinearLayout
+        android:id="@+id/ll_read_ebook_offline"
         android:layout_width="@dimen/nav_item_width"
         android:layout_height="@dimen/nav_item_height"
         android:layout_marginLeft="@dimen/nav_item_margin_start"
@@ -16,7 +17,6 @@
         >
 
         <ImageView
-            android:id="@+id/nav_item_ebook_ic"
             android:layout_width="@dimen/nav_item_icon_width"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_book_black_24dp"
@@ -26,7 +26,29 @@
             android:layout_marginLeft="@dimen/nav_item_tv_margin_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/nav_item_ebook"
+            android:text="@string/nav_item_read_ebook"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize_16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_read_comic_offline"
+        android:layout_width="@dimen/nav_item_width"
+        android:layout_height="@dimen/nav_item_height"
+        android:layout_marginLeft="@dimen/nav_item_margin_start"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="@dimen/nav_item_icon_width"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_book_black_24dp" />
+
+        <TextView
+            android:layout_marginLeft="@dimen/nav_item_tv_margin_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nav_item_read_comic"
             android:textColor="@color/white"
             android:textSize="@dimen/textsize_16sp" />
     </LinearLayout>

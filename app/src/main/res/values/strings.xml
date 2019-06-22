@@ -8,7 +8,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="nav_item_ebook">Đọc Sách</string>
+    <string name="nav_item_read_ebook">Đọc Sách Offline</string>
+    <string name="nav_item_read_comic">Đọc Truyện Offline</string>
     <string name="search_hint">Nhập tên truyện</string>
     <string name="btn_read_ebook">Đọc</string>
     <string name="favorite">Favorites</string>

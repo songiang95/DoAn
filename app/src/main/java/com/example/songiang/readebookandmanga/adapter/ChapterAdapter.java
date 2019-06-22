@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.songiang.readebookandmanga.R;
+import com.example.songiang.readebookandmanga.utils.Constant;
+import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

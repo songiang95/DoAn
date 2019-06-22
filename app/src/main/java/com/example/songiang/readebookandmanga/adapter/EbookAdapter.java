@@ -44,7 +44,6 @@ import android.app.NotificationManager;
 public class EbookAdapter extends RecyclerView.Adapter<EbookAdapter.MyEbookViewHolder> {
 
 
-
     private List<Ebook> data;
     private Context mContext;
 
@@ -136,13 +135,6 @@ public class EbookAdapter extends RecyclerView.Adapter<EbookAdapter.MyEbookViewH
                 final int notification_id = (int) System.currentTimeMillis();
                 PRDownloader.download(ebook.getPdfLink(), Constant.DOWNLOAD_EBOOK_DIR_PATH, ebook.getTitle() + ".pdf")
                         .build()
-                        .setOnProgressListener(new OnProgressListener() {
-                            @Override
-                            public void onProgress(Progress progress) {
-                                builder.setProgress((int) progress.totalBytes / 1000, (int) progress.currentBytes / 1000, false);
-                                notificationManager.notify(notification_id, builder.build());
-                            }
-                        })
                         .start(new OnDownloadListener() {
                             @Override
                             public void onDownloadComplete() {
@@ -175,26 +167,4 @@ public class EbookAdapter extends RecyclerView.Adapter<EbookAdapter.MyEbookViewH
         }
     }
 
-    private void downloadEbook(Ebook ebook) {
-        PRDownloader.download(ebook.getPdfLink(), Constant.DOWNLOAD_EBOOK_DIR_PATH, ebook.getTitle() + ".pdf")
-                .build()
-                .start(new OnDownloadListener() {
-                    @Override
-                    public void onDownloadComplete() {
-
-                    }
-
-                    @Override
-                    public void onError(Error error) {
-
-                    }
-                });
-    }
-
-    private void showNotification() {
-        NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        final Notification.Builder builder = new Notification.Builder(mContext).setContentTitle("Đang tải xuống...")
-                .setSmallIcon(R.drawable.ic_favorite_red_24dp);
-        final int notification_id = (int) System.currentTimeMillis();
-    }
 }

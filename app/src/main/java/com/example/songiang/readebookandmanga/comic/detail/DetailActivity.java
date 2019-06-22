@@ -12,6 +12,7 @@ import android.os.Bundle;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -194,19 +195,18 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
 
         }
     };
-    public static int sProgress = 1;
     private DownloadImageTask.CallBack mCallback = new DownloadImageTask.CallBack() {
         @Override
         public void onDownloadFinish(final List<String> data, final int chapterNumb) {
-            sProgress = 1;
             mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             final Notification.Builder mNotification = new Notification.Builder(DetailActivity.this)
                     .setContentTitle("Đang tải xuống...")
                     .setSmallIcon(R.drawable.ic_favorite_red_24dp);
-            final int notification_id = (int)System.currentTimeMillis();
-
+            final int notification_id = (int) System.currentTimeMillis();
+            int i = 1;
             for (final String url : data) {
-                int downloadId = PRDownloader.download(url, Constant.DOWNLOAD_COMIC_DIR_PATH + comic.getName(), chapterNumb + "_" + data.indexOf(url) + ".jpg")
+                final int progress = i++;
+                PRDownloader.download(url, Constant.DOWNLOAD_COMIC_DIR_PATH + comic.getName(), chapterNumb + "_" + data.indexOf(url) + ".jpg")
                         .build()
                         .setOnStartOrResumeListener(new OnStartOrResumeListener() {
                             @Override
@@ -228,21 +228,21 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
                         .start(new OnDownloadListener() {
                             @Override
                             public void onDownloadComplete() {
-                                if (sProgress == data.size()) {
+                                if (progress == data.size()) {
                                     mNotification.setContentTitle("Đã tải xong")
                                             .setContentText("Đã tải xong truyện " + comic.getName() + " tập " + chapterNumb)
                                             .setProgress(0, 0, false);
                                     mNotificationManager.notify(notification_id, mNotification.build());
-                                } else {
-                                    mNotification.setProgress(data.size(), sProgress, false);
-                                    mNotificationManager.notify(notification_id, mNotification.build());
-                                    sProgress++;
                                 }
+
                             }
 
                             @Override
                             public void onError(Error error) {
-
+                                mNotification.setContentTitle("Lỗi")
+                                        .setContentText("Tải xuống không thành công")
+                                        .setProgress(0, 0, false);
+                                mNotificationManager.notify(notification_id, mNotification.build());
                             }
                         });
             }
@@ -313,8 +313,7 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
 
     @OnClick(R.id.toolbar_home)
     public void onClickHome() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        onBackPressed();
     }
 
 

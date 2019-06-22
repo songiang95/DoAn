@@ -2,6 +2,7 @@ package com.example.songiang.readebookandmanga.comic.main;
 
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -349,5 +351,20 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
         } else {
             Toast.makeText(this, "Bạn cần nhập truyện cần tìm!", Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Log.d("abba", "onConfigurationChanged: landscape ");
+            gridLayoutManager.setSpanCount(5);
+            mRecycleView.setLayoutManager(gridLayoutManager);
+        } else {
+            gridLayoutManager.setSpanCount(3);
+            mRecycleView.setLayoutManager(gridLayoutManager);
+            Log.d("abba", "onConfigurationChanged: potraint ");
+        }
+        super.onConfigurationChanged(newConfig);
+
     }
 }

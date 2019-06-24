@@ -17,6 +17,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -54,6 +55,8 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
     EditText edtSearch;
     @BindView(R.id.refresh_layout)
     SwipeRefreshLayout mRefreshLayout;
+    @BindView(R.id.fr_search_box)
+    FrameLayout mFrSearchBox;
     private boolean isLoaded;
     private EbookAdapter mAdapter;
     private MainPresenter mPresenter;
@@ -96,20 +99,18 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
         acceptPermission();
     }
 
+    @Override
+    protected void onResume() {
+        mSpinner.setVisibility(View.VISIBLE);
+        super.onResume();
+    }
+
     private void acceptPermission() {
         TedPermission.with(this)
                 .setPermissionListener(permissionListener)
                 .setDeniedMessage("Nếu từ chối cấp quyền, bạn sẽ không thể download")
                 .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
                 .check();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (edtSearch.getVisibility() == View.GONE)
-            mSpinner.setVisibility(View.VISIBLE);
-
     }
 
     @Override
@@ -278,8 +279,8 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
 
     @Override
     public void onBackPressed() {
-        if (edtSearch.getVisibility() == View.VISIBLE) {
-            edtSearch.setVisibility(View.GONE);
+        if (mFrSearchBox.getVisibility() == View.VISIBLE) {
+            mFrSearchBox.setVisibility(View.GONE);
             mSpinner.setVisibility(View.VISIBLE);
         } else {
             super.onBackPressed();
@@ -315,9 +316,9 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
 
     @OnClick(R.id.toolbar_search)
     public void onClickSearch() {
-        if (edtSearch.getVisibility() == View.GONE) {
+        if (mFrSearchBox.getVisibility() == View.GONE) {
             mSpinner.setVisibility(View.GONE);
-            edtSearch.setVisibility(View.VISIBLE);
+            mFrSearchBox.setVisibility(View.VISIBLE);
             Utils.showKeyboard(this);
             edtSearch.requestFocus();
             edtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -331,7 +332,8 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
                 }
             });
         } else {
-            edtSearch.setVisibility(View.GONE);
+            mSpinner.setVisibility(View.VISIBLE);
+            mFrSearchBox.setVisibility(View.GONE);
         }
     }
 
@@ -348,23 +350,13 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
     }
 
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        Utils.hideKeyboard(this);
-        if (edtSearch.getVisibility() == View.VISIBLE) {
-            edtSearch.setVisibility(View.GONE);
-            mSpinner.setVisibility(View.VISIBLE);
-        }
-        return super.dispatchTouchEvent(ev);
-    }
-
     private void performSearch() {
 
         String searchQuery = edtSearch.getText().toString();
         if (!searchQuery.equals("")) {
             Utils.hideKeyboard(this);
             edtSearch.setText("");
-            edtSearch.setVisibility(View.GONE);
+            mFrSearchBox.setVisibility(View.GONE);
             Intent intent = new Intent(this, SearchEbookActivity.class);
             intent.putExtra(EXTRA_SEARCH_QUERY, searchQuery);
             startActivity(intent);

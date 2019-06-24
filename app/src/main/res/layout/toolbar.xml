@@ -19,24 +19,31 @@
         android:gravity="center"
         android:popupBackground="@color/white" />
 
-    <EditText
-        android:id="@+id/edt_search"
+    <FrameLayout
+        android:layout_marginEnd="15dp"
+        android:id="@+id/fr_search_box"
+        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:background="@drawable/search_bg"
-        android:backgroundTint="@android:color/transparent"
-        android:hint="@string/search_hint"
-        android:imeOptions="actionSearch"
-        android:inputType="text"
-        android:maxLines="1"
-        android:paddingStart="15dp"
-        android:textColor="@color/white"
-        android:textColorHint="#606060"
-        android:textCursorDrawable="@drawable/white_cursor"
-        android:textSize="14sp"
-        android:visibility="gone" />
+        android:layout_height="40dp"
+        android:background="@drawable/search_bg">
+
+        <EditText
+            android:id="@+id/edt_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:backgroundTint="@android:color/transparent"
+            android:hint="@string/search_hint"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingStart="15dp"
+            android:textColor="@color/white"
+            android:textColorHint="#606060"
+            android:textCursorDrawable="@drawable/white_cursor"
+            android:textSize="14sp" />
+    </FrameLayout>
 
 
 </androidx.appcompat.widget.Toolbar>

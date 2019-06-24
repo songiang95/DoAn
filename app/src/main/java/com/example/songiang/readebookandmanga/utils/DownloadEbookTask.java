@@ -56,12 +56,12 @@ public class DownloadEbookTask extends AsyncTask<String, Void, Void> implements 
                             ebook.setCover(imgSubject.attr("src"));
                             ebook.setTitle(imgSubject.attr("alt"));
                         }
-
                     }
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
+                Log.d("abba", "doInBackground: "+e.toString());
                 if (mCallback != null) {
                     mCallback.isLastPage(true);
                 }
@@ -122,11 +122,16 @@ public class DownloadEbookTask extends AsyncTask<String, Void, Void> implements 
 
                             Element authorSubject = element.getElementsByTag("h5").first();
                             Element pdfSubject = element.getElementsByClass("btn-danger").first();
+                            Element readOnline = element.getElementsByClass("btn-warning").first();
                             if (authorSubject != null) {
                                 mEbook.setAuthorName(authorSubject.text());
                             }
                             if (pdfSubject != null) {
                                 mEbook.setPdfLink(pdfSubject.attr("href"));
+                            }
+                            if(readOnline!=null)
+                            {
+                                mEbook.setReadOnlineLink(readOnline.attr("href"));
                             }
                             data.add(mEbook);
                             executors.getMainThread().execute(new Runnable() {

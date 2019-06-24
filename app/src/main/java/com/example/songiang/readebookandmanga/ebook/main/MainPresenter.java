@@ -68,12 +68,13 @@ public class MainPresenter implements MainConstract.IPresenter, DownloadEbookTas
         }
     }
 
+    private int lastDataSize;
+
     @Override
     public void onFinishDownload(List<Ebook> data) {
-        if (data != null) {
-            mView.hideProgress();
-            mView.showContent(data);
-        }
+        lastDataSize = data.size();
+        mView.hideProgress();
+        mView.showContent(data);
     }
 
     @Override

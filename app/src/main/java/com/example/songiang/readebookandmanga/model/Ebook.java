@@ -6,8 +6,12 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
 @Entity(tableName = "favorite_ebook")
-public class Ebook {
+public class Ebook implements Serializable {
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "id")
@@ -19,6 +23,7 @@ public class Ebook {
     @ColumnInfo(name = "cover")
     private String mCover;
 
+    private String mReadOnlineLink;
     @Ignore
     private String mDescription;
     @Ignore
@@ -38,6 +43,14 @@ public class Ebook {
         this.mCover = mCover;
         this.mUrl = url;
         this.mPdfLink = pdflink;
+    }
+
+    public String getReadOnlineLink() {
+        return mReadOnlineLink;
+    }
+
+    public void setReadOnlineLink(String mReadOnlineLink) {
+        this.mReadOnlineLink = mReadOnlineLink;
     }
 
     public String getPdfLink() {

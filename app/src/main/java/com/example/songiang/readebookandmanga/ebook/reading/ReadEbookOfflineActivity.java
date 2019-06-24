@@ -9,8 +9,10 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.example.songiang.readebookandmanga.R;
+import com.example.songiang.readebookandmanga.model.Ebook;
 import com.example.songiang.readebookandmanga.utils.Constant;
 import com.github.barteksc.pdfviewer.PDFView;
+import com.github.barteksc.pdfviewer.listener.OnErrorListener;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 import com.github.barteksc.pdfviewer.listener.OnPageScrollListener;
 import com.orhanobut.hawk.Hawk;
@@ -34,19 +36,27 @@ public class ReadEbookOfflineActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         Intent intent = getIntent();
-        final String fileName = intent.getStringExtra(Constant.EXTRA_PDF);
-        File pdfFile = new File(Constant.DOWNLOAD_EBOOK_DIR_PATH + File.separator + fileName + ".pdf");
+        final Ebook ebook = (Ebook)intent.getSerializableExtra(Constant.EXTRA_EBOOK);
+        File pdfFile = new File(Constant.DOWNLOAD_EBOOK_DIR_PATH + File.separator + ebook.getTitle() + ".pdf");
         mPdfView.fromFile(pdfFile)
                 .enableSwipe(true)
-                .defaultPage(Hawk.get(Constant.DOWNLOAD + fileName, 0))
+                .defaultPage(Hawk.get(Constant.DOWNLOAD + ebook.getTitle(), 0))
                 .onPageChange(new OnPageChangeListener() {
                     @Override
                     public void onPageChanged(int page, int pageCount) {
-                        Hawk.put(Constant.DOWNLOAD + fileName, page);
+                        Hawk.put(Constant.DOWNLOAD + ebook.getTitle(), page);
                     }
                 })
                 .pageSnap(true)
                 .pageFling(true)
+                .onError(new OnErrorListener() {
+                    @Override
+                    public void onError(Throwable t) {
+                        Intent intent = new Intent(ReadEbookOfflineActivity.this,ReadEbookActivity.class);
+                        intent.putExtra(Constant.EXTRA_READ_ONLINE,ebook.getReadOnlineLink());
+                        startActivity(intent);
+                    }
+                })
                 .load();
     }
 }

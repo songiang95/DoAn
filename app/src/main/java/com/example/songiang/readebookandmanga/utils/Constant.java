@@ -52,4 +52,8 @@ public class Constant {
     public static final String DOWNLOAD = "download";
     public static final String DOWNLOAD_COMIC_DIR_PATH = Environment.getExternalStorageDirectory() + File.separator + "ComicDownload" + File.separator;
     public static final String DOWNLOAD_EBOOK_DIR_PATH = Environment.getExternalStorageDirectory() + File.separator + "EbookDownload";
+
+    public static final String PREF_DOWNLOADED = "downloaded";
+    public static final String PREF_OFFLINE = "offline";
+    public static final String PREF_ONLINE = "online";
 }

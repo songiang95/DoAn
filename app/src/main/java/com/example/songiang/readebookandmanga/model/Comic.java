@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+
 @Entity(tableName = "favorite_comic")
 public class Comic implements Serializable {
 

@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoTitleBar">
-        <activity android:name=".ebook.reading.ReadEbookOfflineActivity"></activity>
+        <activity android:name=".comic.downloaded.ComicDownloadedActivity"></activity>
+        <activity android:name=".ebook.reading.ReadEbookOfflineActivity" />
         <activity android:name=".ebook.favorite.FavoriteEbookActivity" />
         <activity android:name=".comic.favorite.FavoriteActivity" />
         <activity android:name=".ebook.search.SearchEbookActivity" />
@@ -29,6 +30,7 @@
             android:configChanges="keyboard|keyboardHidden|mcc|mnc|orientation|screenSize|locale|layoutDirection|smallestScreenSize|screenLayout">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

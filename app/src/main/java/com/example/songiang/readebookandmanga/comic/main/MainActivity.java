@@ -230,10 +230,15 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
             isLoaded = true;
             mAdapter = new ComicAdapter(this, listData, this);
             mRecycleView.setAdapter(mAdapter);
-            gridLayoutManager = new GridLayoutManager(this, 3);
             mRecycleView.setLayoutManager(gridLayoutManager);
             mRecycleView.setHasFixedSize(true);
-
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                gridLayoutManager = new GridLayoutManager(this, 3);
+                mRecycleView.setLayoutManager(gridLayoutManager);
+            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                gridLayoutManager = new GridLayoutManager(this, 5);
+                mRecycleView.setLayoutManager(gridLayoutManager);
+            }
         } else {
             mAdapter.notifyDataSetChanged();
         }

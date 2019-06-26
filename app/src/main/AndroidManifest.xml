@@ -18,7 +18,9 @@
         <activity android:name=".comic.favorite.FavoriteActivity" />
         <activity android:name=".ebook.search.SearchEbookActivity" />
         <activity android:name=".ebook.reading.ReadEbookActivity" />
-        <activity android:name=".ebook.main.MainEbookActivity" />
+        <activity
+            android:name=".ebook.main.MainEbookActivity"
+            android:configChanges="keyboard|keyboardHidden|mcc|mnc|orientation|screenSize|locale|layoutDirection|smallestScreenSize|screenLayout" />
         <activity android:name=".comic.search.SearchActivity" />
         <activity android:name=".comic.reading.ReadComicActivity" />
         <activity android:name=".comic.detail.DetailActivity" />

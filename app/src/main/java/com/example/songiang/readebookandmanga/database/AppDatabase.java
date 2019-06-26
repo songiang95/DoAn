@@ -13,7 +13,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.example.songiang.readebookandmanga.model.Comic;
 import com.example.songiang.readebookandmanga.model.Ebook;
 
-@Database(entities = {Comic.class, Ebook.class}, version = 2, exportSchema = false)
+@Database(entities = {Comic.class, Ebook.class}, version = 3, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     abstract FavoriteComicDao favoriteComicDao();

@@ -105,11 +105,11 @@ public class EbookAdapter extends RecyclerView.Adapter<EbookAdapter.MyEbookViewH
             final Ebook ebook = data.get(getAdapterPosition());
             if (!Utils.isFavorited(ebook)) {
                 Intent intent = new Intent(mContext, ReadEbookActivity.class);
-                intent.putExtra(Constant.EXTRA_PDF, ebook.getPdfLink());
+                intent.putExtra(Constant.EXTRA_READ_ONLINE, ebook.getReadOnlineLink());
                 mContext.startActivity(intent);
             } else {
                 Intent intent = new Intent(mContext, ReadEbookOfflineActivity.class);
-                intent.putExtra(Constant.EXTRA_PDF, ebook.getTitle());
+                intent.putExtra(Constant.EXTRA_EBOOK, ebook);
                 mContext.startActivity(intent);
             }
         }

@@ -2,16 +2,16 @@ package com.example.songiang.readebookandmanga.ebook.main;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
@@ -19,7 +19,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +26,6 @@ import android.widget.Toast;
 import com.example.songiang.readebookandmanga.R;
 import com.example.songiang.readebookandmanga.adapter.EbookAdapter;
 import com.example.songiang.readebookandmanga.comic.main.MainActivity;
-import com.example.songiang.readebookandmanga.comic.search.SearchActivity;
 import com.example.songiang.readebookandmanga.ebook.favorite.FavoriteEbookActivity;
 import com.example.songiang.readebookandmanga.ebook.search.SearchEbookActivity;
 import com.example.songiang.readebookandmanga.model.Ebook;
@@ -64,7 +62,7 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
     private SlidingRootNav mSlidingBar;
     private int mPageIndex = 1;
     private boolean isLoading = true;
-    private LinearLayoutManager linearLayoutManager;
+    private GridLayoutManager gridLayoutManager;
     private PermissionListener permissionListener = new PermissionListener() {
         @Override
         public void onPermissionGranted() {
@@ -120,8 +118,13 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
             isLoaded = true;
             mAdapter = new EbookAdapter(this, data);
             mRcEbook.setAdapter(mAdapter);
-            linearLayoutManager = new LinearLayoutManager(this);
-            mRcEbook.setLayoutManager(linearLayoutManager);
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                gridLayoutManager = new GridLayoutManager(this, 1);
+                mRcEbook.setLayoutManager(gridLayoutManager);
+            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                gridLayoutManager = new GridLayoutManager(this, 2);
+                mRcEbook.setLayoutManager(gridLayoutManager);
+            }
         } else {
             mAdapter.notifyDataSetChanged();
         }
@@ -263,9 +266,9 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
-                int visibleItemCount = linearLayoutManager.getChildCount();
-                int totalItemCount = linearLayoutManager.getItemCount();
-                int firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
+                int visibleItemCount = gridLayoutManager.getChildCount();
+                int totalItemCount = gridLayoutManager.getItemCount();
+                int firstVisibleItemPosition = gridLayoutManager.findFirstVisibleItemPosition();
 
                 if (isLoading && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0) {
                     isLoading = false;
@@ -364,6 +367,19 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
         } else {
             Toast.makeText(this, "Bạn cần nhập sách cần tìm!", Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            gridLayoutManager.setSpanCount(2);
+            mRcEbook.setLayoutManager(gridLayoutManager);
+        } else {
+            gridLayoutManager.setSpanCount(1);
+            mRcEbook.setLayoutManager(gridLayoutManager);
+        }
+        super.onConfigurationChanged(newConfig);
+
     }
 
     @Override

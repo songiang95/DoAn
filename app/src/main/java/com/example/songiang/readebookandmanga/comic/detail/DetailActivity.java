@@ -1,18 +1,21 @@
 package com.example.songiang.readebookandmanga.comic.detail;
 
 import android.Manifest;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Intent;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,12 +33,15 @@ import com.downloader.OnStartOrResumeListener;
 import com.downloader.PRDownloader;
 import com.example.songiang.readebookandmanga.R;
 import com.example.songiang.readebookandmanga.adapter.ChapterAdapter;
+import com.example.songiang.readebookandmanga.adapter.ComicDownloadedAdapter;
 import com.example.songiang.readebookandmanga.comic.favorite.FavoriteActivity;
 import com.example.songiang.readebookandmanga.comic.main.MainActivity;
 import com.example.songiang.readebookandmanga.database.Repository;
 import com.example.songiang.readebookandmanga.ebook.main.MainEbookActivity;
+import com.example.songiang.readebookandmanga.model.Chapter;
 import com.example.songiang.readebookandmanga.model.Comic;
 import com.example.songiang.readebookandmanga.comic.reading.ReadComicActivity;
+import com.example.songiang.readebookandmanga.model.ComicDownloaded;
 import com.example.songiang.readebookandmanga.utils.Constant;
 import com.example.songiang.readebookandmanga.utils.DownloadImageTask;
 import com.example.songiang.readebookandmanga.utils.Utils;
@@ -46,6 +52,7 @@ import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +60,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class DetailActivity extends AppCompatActivity implements DetailContract.IView, ChapterAdapter.OnItemClickListener {
+public class DetailActivity extends AppCompatActivity implements DetailContract.IView {
 
     @BindView(R.id.pb_loading)
     ProgressBar pbLoading;
@@ -64,7 +71,7 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
     @BindView(R.id.tv_comic_title)
     TextView tvTitle;
     @BindView(R.id.recycle_chap_list)
-    RecyclerView recyclerView;
+    RecyclerView mRecycleView;
     @BindView(R.id.tv_read_continue)
     TextView tvContinue;
     @BindView(R.id.iv_favorite)
@@ -78,43 +85,130 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
     private List<String> listChap;
     private DetailContract.IPresenter mPresenter;
     public static final String EXTRA_URL = "url";
-    private Comic comic;
-    private ChapterAdapter chapterAdapter;
+    public static final String EXTRA_CHAPTER_NUMB = "chapter_numb";
+    public static final String EXTRA_COMIC_NAME = "comic_name";
+    private Comic mComic;
+    private ChapterAdapter mChapterAdapter;
     private NotificationManager mNotificationManager;
+    private Repository mRepository;
+    private ComicDownloaded mComicDownloaded;
+    private ChapterAdapter.OnItemClickListener mOnlineCallback = new ChapterAdapter.OnItemClickListener() {
+        @Override
+        public void onItemClick(View v, String url, int position) {
+            if (url != null) {
+                Hawk.put(Constant.PREF_CONTINUE_CHAP_NUMB + mComic.getName(), position + 1);
+                Hawk.put(Constant.PREF_CONTINUE_CHAP_URL + mComic.getName(), url);
 
+                Intent intent = new Intent(DetailActivity.this, ReadComicActivity.class);
+                intent.putExtra(EXTRA_URL, url);
+                intent.setAction(Constant.PREF_ONLINE);
+                startActivity(intent);
+            } else {
+                Toast.makeText(DetailActivity.this, "Error", Toast.LENGTH_LONG).show();
+            }
+        }
+    };
+
+    private ChapterAdapter.OnItemClickListener mOfflineCallback = new ChapterAdapter.OnItemClickListener() {
+        @Override
+        public void onItemClick(View v, String title, int chapterNumb) {
+            Hawk.put(Constant.PREF_CONTINUE_CHAP_NUMB + mComicDownloaded.getTitle(), chapterNumb);
+            Intent intent = new Intent(DetailActivity.this, ReadComicActivity.class);
+            intent.setAction(Constant.PREF_OFFLINE);
+            intent.putExtra(DetailActivity.EXTRA_CHAPTER_NUMB, chapterNumb);
+            intent.putExtra(DetailActivity.EXTRA_COMIC_NAME, title);
+            startActivity(intent);
+        }
+    };
+
+    private Comparator<Chapter> mChapterComparator = new Comparator<Chapter>() {
+        @Override
+        public int compare(Chapter o1, Chapter o2) {
+            return o1.getChapterNumb() > o2.getChapterNumb() ? 1 : -1;
+        }
+    };
 
     private int STORAGE_PERMISSION_CODE = 23;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
         Intent receiveIntent = getIntent();
-        comic = (Comic) receiveIntent.getSerializableExtra(MainActivity.EXTRA_COMIC);
-        mPresenter = new DetailPresenter();
-        mPresenter.attachView(this);
-        mPresenter.load(comic);
+        String action = receiveIntent.getAction();
+        mRepository = new Repository(this);
+        if (TextUtils.equals(action, Constant.PREF_ONLINE)) {
+            llComicInfo.setVisibility(View.VISIBLE);
+            mComic = (Comic) receiveIntent.getSerializableExtra(MainActivity.EXTRA_COMIC);
+            mPresenter = new DetailPresenter();
+            mPresenter.attachView(this);
+            mPresenter.load(mComic);
+        } else if (TextUtils.equals(action, Constant.PREF_OFFLINE)) {
+            llComicInfo.setVisibility(View.GONE);
+            mComicDownloaded = (ComicDownloaded) receiveIntent.getSerializableExtra(ComicDownloadedAdapter.EXTRA_COMIC_DOWNLOADED);
+            initDownloadedComicInfo(mComicDownloaded);
+            initDownloadedChapter(mComicDownloaded);
+        }
 
     }
 
+    private void initDownloadedComicInfo(ComicDownloaded comicDownloaded) {
+        tvAuthor.setText(comicDownloaded.getAuthor());
+        tvTitle.setText(comicDownloaded.getTitle());
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void initDownloadedChapter(ComicDownloaded comicDownloaded) {
+        new AsyncTaskLoadChapter().execute(comicDownloaded);
+    }
+
+    class AsyncTaskLoadChapter extends AsyncTask<ComicDownloaded, Void, List<Chapter>> {
+
+        @Override
+        protected List<Chapter> doInBackground(ComicDownloaded... comicDownloadeds) {
+            ArrayList<Chapter> chapters = (ArrayList) mRepository.getAllChapters(comicDownloadeds[0].getTitle());
+            return chapters;
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.N)
+        @Override
+        protected void onPostExecute(List<Chapter> chapters) {
+            super.onPostExecute(chapters);
+            if (chapters != null) {
+                chapters.sort(mChapterComparator);
+                mComicDownloaded.setChaptersDownloaded(chapters);
+                mChapterAdapter = new ChapterAdapter(mComicDownloaded.getChaptersDownloaded(), mComicDownloaded);
+                mChapterAdapter.setCallback(mOfflineCallback);
+                mRecycleView.setAdapter(mChapterAdapter);
+                mRecycleView.hasFixedSize();
+                mRecycleView.setLayoutManager(new GridLayoutManager(DetailActivity.this, 5));
+            } else {
+                Log.d("abba", "chapter is null: ");
+            }
+        }
+    }
 
     @Override
     protected void onResume() {
-        if (chapterAdapter != null) {
-            chapterAdapter.notifyDataSetChanged();
+        if (mChapterAdapter != null) {
+            mChapterAdapter.notifyDataSetChanged();
+        }
+
+        if (mComic != null) {
+            int chapNumbContinue = Hawk.get(Constant.PREF_CONTINUE_CHAP_NUMB + mComic.getName(), 1);
+            tvContinue.setText("Read " + chapNumbContinue);
+            if (Utils.isFavorited(mComic)) {
+                Glide.with(this).load(R.drawable.ic_favorite_red_24dp).into(ivFavorite);
+            }
         }
         super.onResume();
-        int chapNumbContinue = Hawk.get(Constant.PREF_CONTINUE_CHAP_NUMB + comic.getName(), 1);
-        tvContinue.setText("Read " + chapNumbContinue);
-        if (Utils.isFavorited(comic)) {
-            Glide.with(this).load(R.drawable.ic_favorite_red_24dp).into(ivFavorite);
-        }
     }
 
     private void getChapList(Comic comic) {
         Map map = comic.getMap();
-        listChap = new ArrayList<String>(comic.getMap().values());
+        listChap = new ArrayList<String>(map.values());
         Collections.reverse(listChap);
     }
 
@@ -127,18 +221,13 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
                 .load(comic.getImage())
                 .centerCrop()
                 .into(ivCover);
-        chapterAdapter = new ChapterAdapter(listChap, this, comic);
-        recyclerView.setAdapter(chapterAdapter);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 5));
+        mChapterAdapter = new ChapterAdapter(listChap, comic);
+        mChapterAdapter.setCallback(mOnlineCallback);
+        mRecycleView.setAdapter(mChapterAdapter);
+        mRecycleView.setHasFixedSize(true);
+        mRecycleView.setLayoutManager(new GridLayoutManager(this, 5));
     }
 
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mPresenter.detachView();
-    }
 
     @Override
     public void showProgress() {
@@ -151,24 +240,10 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
     }
 
 
-    @Override
-    public void onItemClick(View v, String url, int position) {
-        if (url != null) {
-            Hawk.put(Constant.PREF_CONTINUE_CHAP_NUMB + comic.getName(), position + 1);
-            Hawk.put(Constant.PREF_CONTINUE_CHAP_URL + comic.getName(), url);
-
-            Intent intent = new Intent(this, ReadComicActivity.class);
-            intent.putExtra(EXTRA_URL, url);
-            startActivity(intent);
-        } else {
-            Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
-        }
-    }
-
     @OnClick(R.id.tv_read_continue)
     public void onClickContinue() {
         Intent intent = new Intent(this, ReadComicActivity.class);
-        String url = Hawk.get(Constant.PREF_CONTINUE_CHAP_URL + comic.getName(), listChap.get(0));
+        String url = Hawk.get(Constant.PREF_CONTINUE_CHAP_URL + mComic.getName(), listChap.get(0));
         intent.putExtra(EXTRA_URL, url);
         startActivity(intent);
     }
@@ -179,22 +254,26 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
             mTvDownload.setVisibility(View.GONE);
             mBotToolbar.setVisibility(View.VISIBLE);
             llComicInfo.setVisibility(View.VISIBLE);
-            if (chapterAdapter != null) {
-                chapterAdapter.setItemSelection(false);
-                chapterAdapter.notifyDataSetChanged();
-                chapterAdapter.clearSelectedItem();
+            if (mChapterAdapter != null) {
+                mChapterAdapter.setItemSelection(false);
+                mChapterAdapter.notifyDataSetChanged();
+                mChapterAdapter.clearSelectedItem();
             }
         } else {
             super.onBackPressed();
         }
     }
 
+
     @OnClick(R.id.iv_download)
     public void onClickSelectToDownload() {
+        mComicDownloaded = new ComicDownloaded();
+        mComicDownloaded.setTitle(mComic.getName());
+        mComicDownloaded.setAuthor(mComic.getArtist());
         mBotToolbar.setVisibility(View.GONE);
         llComicInfo.setVisibility(View.GONE);
         mTvDownload.setVisibility(View.VISIBLE);
-        chapterAdapter.setItemSelection(true);
+        mChapterAdapter.setItemSelection(true);
         TedPermission.with(this)
                 .setPermissionListener(permissionListener)
                 .setDeniedMessage("Nếu từ chối cấp quyền, bạn sẽ không thể download")
@@ -217,17 +296,17 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
     private DownloadImageTask.CallBack mCallback = new DownloadImageTask.CallBack() {
         @Override
         public void onDownloadFinish(final List<String> data, final int chapterNumb) {
+            final Chapter chapter = new Chapter(mComic.getName(), chapterNumb);
             mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             final NotificationCompat.Builder mNotification = new NotificationCompat.Builder(DetailActivity.this, "M_CH_ID")
                     .setContentTitle("Đã tải xong")
-                    .setContentText("Đã tải xong truyện " + comic.getName() + " tập " + chapterNumb)
+                    .setContentText("Đã tải xong truyện " + mComic.getName() + " tập " + chapterNumb)
                     .setSmallIcon(R.drawable.ic_favorite_red_24dp);
-
             final int notification_id = (int) System.currentTimeMillis();
             int i = 1;
             for (final String url : data) {
                 final int progress = i++;
-                PRDownloader.download(url, Constant.DOWNLOAD_COMIC_DIR_PATH + comic.getName(), chapterNumb + "_" + data.indexOf(url) + ".jpg")
+                PRDownloader.download(url, Constant.DOWNLOAD_COMIC_DIR_PATH + mComic.getName(), chapterNumb + "_" + data.indexOf(url) + ".jpg")
                         .build()
                         .setOnStartOrResumeListener(new OnStartOrResumeListener() {
                             @Override
@@ -249,7 +328,14 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
                         .start(new OnDownloadListener() {
                             @Override
                             public void onDownloadComplete() {
+
                                 if (progress == data.size()) {
+                                    if (!Hawk.get(Constant.PREF_DOWNLOADED, false)) {
+                                        Hawk.put(Constant.PREF_DOWNLOADED + mComic.getName(), true);
+                                        downloadCover();
+                                        mRepository.insertDownloadedComic(mComicDownloaded);
+                                    }
+                                    mRepository.insertChapter(chapter);
                                     mNotificationManager.notify(notification_id, mNotification.build());
                                 }
 
@@ -257,6 +343,7 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
 
                             @Override
                             public void onError(Error error) {
+
                                 mNotification.setContentTitle("Lỗi")
                                         .setContentText("Tải xuống không thành công");
                                 mNotificationManager.notify(notification_id, mNotification.build());
@@ -268,7 +355,7 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
 
     @OnClick(R.id.tv_download)
     public void onClickStartDownload() {
-        Map<Integer, String> selectedList = chapterAdapter.getSelectedItem();
+        Map<Integer, String> selectedList = mChapterAdapter.getSelectedItem();
         if (selectedList.isEmpty()) {
             Toast.makeText(this, "Vui lòng chọn tập truyện để tải xuống", Toast.LENGTH_SHORT).show();
         } else {
@@ -280,11 +367,27 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
         }
     }
 
+    public void downloadCover() {
+        PRDownloader.download(mComic.getImage(), Constant.DOWNLOAD_COMIC_DIR_PATH + mComic.getName(), "cover_" + mComic.getName() + ".jpg")
+                .build()
+                .start(new OnDownloadListener() {
+                    @Override
+                    public void onDownloadComplete() {
+                        Log.d("abba", "onDownloadComplete: download cover success");
+                    }
+
+                    @Override
+                    public void onError(Error error) {
+
+                    }
+                });
+    }
+
 //    @Override
 //    public void onDownloadFinish(List<String> data, int chapterNumb) {
 //        int i = 1;
 //        for (String url : data) {
-//            Utils.writeToDisk(this, url, comic.getName(), chapterNumb, i);
+//            Utils.writeToDisk(this, url, mComic.getName(), chapterNumb, i);
 //            i++;
 //
 //        }
@@ -338,26 +441,28 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
 
     @OnClick(R.id.iv_favorite)
     public void onClickFavorite() {
-        if (!Utils.isFavorited(comic)) {
-            new Thread() {
-                @Override
-                public void run() {
-                    Repository repository = new Repository(getApplicationContext());
-                    repository.getFavoriteComicDao().insertComicFavorite(comic);
-                }
-            }.start();
-            Hawk.put(comic.getName(), true);
-            Glide.with(this).load(R.drawable.ic_favorite_red_24dp).into(ivFavorite);
-        } else {
-            new Thread() {
-                @Override
-                public void run() {
-                    Repository repository = new Repository(getApplicationContext());
-                    repository.getFavoriteComicDao().deleteFavoriteComic(comic);
-                }
-            }.start();
-            Hawk.put(comic.getName(), false);
-            Glide.with(this).load(R.drawable.ic_favorite_black_24dp).into(ivFavorite);
+        if (mComic != null) {
+            if (!Utils.isFavorited(mComic)) {
+                new Thread() {
+                    @Override
+                    public void run() {
+                        Repository repository = new Repository(getApplicationContext());
+                        repository.getFavoriteComicDao().insertComicFavorite(mComic);
+                    }
+                }.start();
+                Hawk.put(mComic.getName(), true);
+                Glide.with(this).load(R.drawable.ic_favorite_red_24dp).into(ivFavorite);
+            } else {
+                new Thread() {
+                    @Override
+                    public void run() {
+                        Repository repository = new Repository(getApplicationContext());
+                        repository.getFavoriteComicDao().deleteFavoriteComic(mComic);
+                    }
+                }.start();
+                Hawk.put(mComic.getName(), false);
+                Glide.with(this).load(R.drawable.ic_favorite_black_24dp).into(ivFavorite);
+            }
         }
     }
 

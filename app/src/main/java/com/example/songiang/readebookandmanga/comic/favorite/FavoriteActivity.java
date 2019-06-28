@@ -69,6 +69,7 @@ public class FavoriteActivity extends AppCompatActivity implements ComicAdapter.
         if (comic != null) {
             Intent intentToDetail = new Intent(this, DetailActivity.class);
             intentToDetail.putExtra(Constant.EXTRA_COMIC, comic);
+            intentToDetail.setAction(Constant.PREF_ONLINE);
             startActivity(intentToDetail);
         } else {
             Toast.makeText(this, "Comic data error", Toast.LENGTH_LONG).show();

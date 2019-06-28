@@ -2,6 +2,7 @@ package com.example.songiang.readebookandmanga.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,8 +49,10 @@ public class ComicDownloadedAdapter extends RecyclerView.Adapter<ComicDownloaded
 
         ComicDownloaded comic = mListComic.get(position);
         File file = new File(Constant.DOWNLOAD_COMIC_DIR_PATH + comic.getTitle() + File.separator + "cover_" + comic.getTitle() + ".jpg");
+        Log.d("abba", "cover file name: " + file.getAbsolutePath());
         Glide.with(mContext)
                 .load(file)
+                .centerCrop()
                 .into(holder.ivImage);
         holder.tvComicName.setText(comic.getTitle());
     }

@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 
 import com.example.songiang.readebookandmanga.R;
 import com.example.songiang.readebookandmanga.adapter.ComicDownloadedAdapter;
@@ -32,13 +34,25 @@ public class ComicDownloadedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_comic_downloaded);
         ButterKnife.bind(this);
         mRepository = new Repository(this);
-        mListComic = mRepository.getAllComicDownloaded();
+        new MyAsyntask().execute();
 
-        ComicDownloadedAdapter adapter = new ComicDownloadedAdapter(mListComic, ComicDownloadedActivity.this);
-        mRecycleView.setAdapter(adapter);
-        mRecycleView.setLayoutManager(new GridLayoutManager(ComicDownloadedActivity.this, 3));
-        mRecycleView.hasFixedSize();
+    }
 
+    class MyAsyntask extends AsyncTask<Void, Void, Void> {
 
+        @Override
+        protected Void doInBackground(Void... voids) {
+            mListComic = mRepository.getAllComicDownloaded();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            ComicDownloadedAdapter adapter = new ComicDownloadedAdapter(mListComic, ComicDownloadedActivity.this);
+            mRecycleView.setAdapter(adapter);
+            mRecycleView.setLayoutManager(new GridLayoutManager(ComicDownloadedActivity.this, 3));
+            mRecycleView.hasFixedSize();
+        }
     }
 }

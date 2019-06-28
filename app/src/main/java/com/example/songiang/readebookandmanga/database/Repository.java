@@ -60,14 +60,8 @@ public class Repository {
 
 
     public List<ComicDownloaded> getAllComicDownloaded() {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                listComicDownloaded = downloadComicDao.getAllDownloadedComic();
-                Log.d("abba", "get list comic success: " + listComicDownloaded.toString());
-            }
-        });
-
+        listComicDownloaded = downloadComicDao.getAllDownloadedComic();
+        Log.d("abba", "get list comic success: " + listComicDownloaded.toString());
         return listComicDownloaded;
     }
 
@@ -90,12 +84,7 @@ public class Repository {
     }
 
     public List<Chapter> getAllChapters(final String comicName) {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                listChapters = chapterDao.getAllChapter(comicName);
-            }
-        });
+        listChapters = chapterDao.getAllChapter(comicName);
         return listChapters;
     }
 }

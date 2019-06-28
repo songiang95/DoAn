@@ -18,6 +18,7 @@ import com.example.songiang.readebookandmanga.adapter.ComicAdapter;
 import com.example.songiang.readebookandmanga.comic.detail.DetailActivity;
 import com.example.songiang.readebookandmanga.comic.main.MainActivity;
 import com.example.songiang.readebookandmanga.model.Comic;
+import com.example.songiang.readebookandmanga.utils.Constant;
 
 import java.util.List;
 
@@ -93,6 +94,7 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
         if (comic != null) {
             Intent intentToDetail = new Intent(this, DetailActivity.class);
             intentToDetail.putExtra(MainActivity.EXTRA_COMIC, comic);
+            intentToDetail.setAction(Constant.PREF_ONLINE);
             startActivity(intentToDetail);
         } else {
             Toast.makeText(this, "Comic data error", Toast.LENGTH_LONG).show();

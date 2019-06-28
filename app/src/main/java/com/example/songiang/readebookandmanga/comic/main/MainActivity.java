@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
+import com.example.songiang.readebookandmanga.comic.downloaded.ComicDownloadedActivity;
 import com.example.songiang.readebookandmanga.comic.favorite.FavoriteActivity;
 import com.example.songiang.readebookandmanga.comic.search.SearchActivity;
 import com.example.songiang.readebookandmanga.ebook.favorite.FavoriteEbookActivity;
@@ -270,6 +271,7 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
         if (comic != null) {
             Intent intentToDetail = new Intent(this, DetailActivity.class);
             intentToDetail.putExtra(EXTRA_COMIC, comic);
+            intentToDetail.setAction(Constant.PREF_ONLINE);
             startActivity(intentToDetail);
         } else {
             Toast.makeText(this, "Comic data error", Toast.LENGTH_LONG).show();
@@ -318,6 +320,11 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
             mSpinner.setVisibility(View.VISIBLE);
             mFrSearchBox.setVisibility(View.GONE);
         }
+    }
+
+    @OnClick(R.id.ll_read_comic_offline)
+    public void onClickReadComicOffline() {
+        startActivity(new Intent(this, ComicDownloadedActivity.class));
     }
 
     @OnClick(R.id.toolbar_change_mode)

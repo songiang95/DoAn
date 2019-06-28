@@ -10,15 +10,20 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.example.songiang.readebookandmanga.model.Chapter;
 import com.example.songiang.readebookandmanga.model.Comic;
+import com.example.songiang.readebookandmanga.model.ComicDownloaded;
 import com.example.songiang.readebookandmanga.model.Ebook;
 
-@Database(entities = {Comic.class, Ebook.class}, version = 3, exportSchema = false)
+@Database(entities = {Comic.class, Ebook.class, Chapter.class, ComicDownloaded.class}, version = 4, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     abstract FavoriteComicDao favoriteComicDao();
     abstract FavoriteEbookDao favoriteEbookDao();
 
+    abstract ChapterDao chapterDao();
+
+    abstract DownloadComicDao downloadComicDao();
     private static volatile AppDatabase INSTANCE;
 
     static final Migration MIGRATION_1_2  = new Migration(1,2) {

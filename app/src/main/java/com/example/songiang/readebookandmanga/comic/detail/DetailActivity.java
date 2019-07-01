@@ -244,6 +244,7 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
     public void onClickContinue() {
         Intent intent = new Intent(this, ReadComicActivity.class);
         String url = Hawk.get(Constant.PREF_CONTINUE_CHAP_URL + mComic.getName(), listChap.get(0));
+        intent.setAction(Constant.PREF_ONLINE);
         intent.putExtra(EXTRA_URL, url);
         startActivity(intent);
     }

@@ -32,6 +32,7 @@ import com.gun0912.tedpermission.TedPermission;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.orhanobut.hawk.Hawk;
 
+import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -159,6 +160,10 @@ public class EbookAdapter extends RecyclerView.Adapter<EbookAdapter.MyEbookViewH
                     public void run() {
                         Repository repository = new Repository(mContext);
                         repository.getFavoriteEbookDao().deleteFavoriteEbook(ebook);
+                        File fileDelete = new File(Constant.DOWNLOAD_EBOOK_DIR_PATH + File.separator + ebook.getTitle() + ".pdf");
+                        if(fileDelete.exists()){
+                            fileDelete.delete();
+                        }
                     }
                 }.start();
                 Hawk.put(ebook.getTitle(), false);

@@ -84,9 +84,7 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
         Fresco.initialize(this);
 
         //Activate toolbar
-        if (!Hawk.isBuilt()) {
-            Hawk.init(this).build();
-        }
+
         activateToolbar();
 
         initSpinnerListener();

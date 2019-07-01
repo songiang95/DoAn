@@ -115,12 +115,32 @@ public class EbookAdapter extends RecyclerView.Adapter<EbookAdapter.MyEbookViewH
             }
         }
 
+        private void acceptPermission() {
+            TedPermission.with(mContext)
+                    .setPermissionListener(permissionListener)
+                    .setDeniedMessage("Nếu từ chối cấp quyền, bạn sẽ không thể download")
+                    .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    .check();
+        }
+
+        private PermissionListener permissionListener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+
+            }
+
+            @Override
+            public void onPermissionDenied(List<String> deniedPermissions) {
+
+            }
+        };
 
         @OnClick(R.id.iv_favorite)
         public void onClickFavorite() {
             final Ebook ebook = data.get(getAdapterPosition());
             if (!Utils.isFavorited(ebook)) {
 
+                acceptPermission();
                 new Thread() {
                     @Override
                     public void run() {
@@ -161,7 +181,7 @@ public class EbookAdapter extends RecyclerView.Adapter<EbookAdapter.MyEbookViewH
                         Repository repository = new Repository(mContext);
                         repository.getFavoriteEbookDao().deleteFavoriteEbook(ebook);
                         File fileDelete = new File(Constant.DOWNLOAD_EBOOK_DIR_PATH + File.separator + ebook.getTitle() + ".pdf");
-                        if(fileDelete.exists()){
+                        if (fileDelete.exists()) {
                             fileDelete.delete();
                         }
                     }

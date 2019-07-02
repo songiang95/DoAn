@@ -10,6 +10,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.songiang.readebookandmanga.R;
 import com.example.songiang.readebookandmanga.adapter.EbookAdapter;
+import com.example.songiang.readebookandmanga.comic.downloaded.ComicDownloadedActivity;
 import com.example.songiang.readebookandmanga.comic.main.MainActivity;
 import com.example.songiang.readebookandmanga.ebook.favorite.FavoriteEbookActivity;
 import com.example.songiang.readebookandmanga.ebook.search.SearchEbookActivity;
@@ -76,11 +78,12 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_ebook);
+        initNavigation();
         ButterKnife.bind(this);
         if (!Hawk.isBuilt()) {
             Hawk.init(this).build();
         }
-        initNavigation();
+
         initSpinnerListener();
         initLoadMoreListener();
         mRefreshLayout.setOnRefreshListener(mRefreshListener);
@@ -266,13 +269,30 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
         });
     }
 
+    private boolean mDoubleBackToExitPressedOnce;
+
     @Override
     public void onBackPressed() {
         if (mFrSearchBox.getVisibility() == View.VISIBLE) {
             mFrSearchBox.setVisibility(View.GONE);
             mSpinner.setVisibility(View.VISIBLE);
         } else {
-            super.onBackPressed();
+            if (mDoubleBackToExitPressedOnce) {
+                super.onBackPressed();
+                return;
+            }
+
+            mDoubleBackToExitPressedOnce = true;
+            if (!MainEbookActivity.this.isFinishing()) {
+                Toast.makeText(this, "Nhấn BACK một lần nữa để thoát", Toast.LENGTH_SHORT).show();
+            }
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    mDoubleBackToExitPressedOnce = false;
+                }
+            }, 2000);
         }
     }
 
@@ -338,6 +358,17 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
         startActivity(new Intent(this, MainActivity.class));
     }
 
+    @OnClick(R.id.ll_read_ebook_offline)
+    public void onClickReadEbookOffline() {
+        Intent intent = new Intent(this, FavoriteEbookActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.ll_read_comic_offline)
+    public void onClickReadComicOffline() {
+        startActivity(new Intent(this, ComicDownloadedActivity.class));
+    }
+
 
     private void performSearch() {
 
@@ -353,6 +384,7 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
             Toast.makeText(this, "Bạn cần nhập sách cần tìm!", Toast.LENGTH_LONG).show();
         }
     }
+
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {

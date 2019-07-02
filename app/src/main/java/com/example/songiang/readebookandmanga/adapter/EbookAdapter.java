@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -139,41 +141,43 @@ public class EbookAdapter extends RecyclerView.Adapter<EbookAdapter.MyEbookViewH
         public void onClickFavorite() {
             final Ebook ebook = data.get(getAdapterPosition());
             if (!Utils.isFavorited(ebook)) {
-
                 acceptPermission();
-                new Thread() {
-                    @Override
-                    public void run() {
-                        Repository repository = new Repository(mContext);
-                        repository.getFavoriteEbookDao().insertEbookFavorite(ebook);
-                    }
-                }.start();
-                Hawk.put(ebook.getTitle(), true);
-                Glide.with(itemView).load(R.drawable.ic_favorite_red_24dp).into(ivFavorite);
-                final NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-                final Notification.Builder builder = new Notification.Builder(mContext).setContentTitle("Đang tải xuống...")
-                        .setSmallIcon(R.drawable.ic_favorite_red_24dp);
-                final int notification_id = (int) System.currentTimeMillis();
-                PRDownloader.download(ebook.getPdfLink(), Constant.DOWNLOAD_EBOOK_DIR_PATH, ebook.getTitle() + ".pdf")
-                        .build()
-                        .start(new OnDownloadListener() {
-                            @Override
-                            public void onDownloadComplete() {
-                                Log.d("abba", "onDownloadComplete: ");
-                                builder.setContentTitle("Đã tải xong")
-                                        .setContentText("Đã tải xong sách " + ebook.getTitle())
-                                        .setProgress(0, 0, false);
-                                notificationManager.notify(notification_id, builder.build());
-                            }
+                if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            Repository repository = new Repository(mContext);
+                            repository.getFavoriteEbookDao().insertEbookFavorite(ebook);
+                        }
+                    }.start();
+                    Hawk.put(ebook.getTitle(), true);
+                    Glide.with(itemView).load(R.drawable.ic_favorite_red_24dp).into(ivFavorite);
+                    final NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                    final Notification.Builder builder = new Notification.Builder(mContext).setContentTitle("Đang tải xuống...")
+                            .setSmallIcon(R.drawable.ic_favorite_red_24dp);
+                    final int notification_id = (int) System.currentTimeMillis();
+                    PRDownloader.download(ebook.getPdfLink(), Constant.DOWNLOAD_EBOOK_DIR_PATH, ebook.getTitle() + ".pdf")
+                            .build()
+                            .start(new OnDownloadListener() {
+                                @Override
+                                public void onDownloadComplete() {
+                                    Log.d("abba", "onDownloadComplete: ");
+                                    builder.setContentTitle("Đã tải xong")
+                                            .setContentText("Đã tải xong sách " + ebook.getTitle())
+                                            .setProgress(0, 0, false);
+                                    notificationManager.notify(notification_id, builder.build());
+                                }
 
-                            @Override
-                            public void onError(Error error) {
-                                builder.setContentTitle("Lỗi")
-                                        .setContentText("Tải xuống không thành công ")
-                                        .setProgress(0, 0, false);
-                                notificationManager.notify(notification_id, builder.build());
-                            }
-                        });
+                                @Override
+                                public void onError(Error error) {
+                                    builder.setContentTitle("Lỗi")
+                                            .setContentText("Tải xuống không thành công ")
+                                            .setProgress(0, 0, false);
+                                    notificationManager.notify(notification_id, builder.build());
+                                }
+                            });
+                }
+
             } else {
                 new Thread() {
                     @Override

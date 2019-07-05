@@ -268,6 +268,7 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
 
     @OnClick(R.id.iv_download)
     public void onClickSelectToDownload() {
+        mTvDownload.setText("Bắt đầu tải");
         mComicDownloaded = new ComicDownloaded();
         mComicDownloaded.setTitle(mComic.getName());
         mComicDownloaded.setAuthor(mComic.getArtist());
@@ -331,6 +332,7 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
                             public void onDownloadComplete() {
 
                                 if (progress == data.size()) {
+                                    mTvDownload.setText("Đã tải xong");
                                     if (!Hawk.get(Constant.PREF_DOWNLOADED, false)) {
                                         Hawk.put(Constant.PREF_DOWNLOADED + mComic.getName(), true);
                                         downloadCover();
@@ -344,7 +346,7 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
 
                             @Override
                             public void onError(Error error) {
-
+                                mTvDownload.setText("Tải xuống không thành công");
                                 mNotification.setContentTitle("Lỗi")
                                         .setContentText("Tải xuống không thành công");
                                 mNotificationManager.notify(notification_id, mNotification.build());
@@ -360,6 +362,7 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
         if (selectedList.isEmpty()) {
             Toast.makeText(this, "Vui lòng chọn tập truyện để tải xuống", Toast.LENGTH_SHORT).show();
         } else {
+            mTvDownload.setText("Đang tải xuống");
             for (Integer key : selectedList.keySet()) {
                 DownloadImageTask downloadImageTask = new DownloadImageTask(key);
                 downloadImageTask.setCallback(mCallback);

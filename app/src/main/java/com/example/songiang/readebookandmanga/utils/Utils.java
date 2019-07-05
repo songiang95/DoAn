@@ -4,6 +4,7 @@ import android.app.DownloadManager;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.example.songiang.readebookandmanga.model.Ebook;
 import com.orhanobut.hawk.Hawk;
 
 import java.io.File;
+import java.io.IOException;
 
 public class Utils {
 
@@ -68,7 +70,7 @@ public class Utils {
         request.allowScanningByMediaScanner();
         request.setDestinationUri(getDownloadDestination(downloadSubfolder));
         request.setTitle(fileName);
-        request.setDestinationInExternalPublicDir(Environment.getExternalStorageDirectory() + File.separator + "ComicDownload" + File.separator + downloadSubfolder,fileName+".jpg");
+        request.setDestinationInExternalPublicDir(Environment.getExternalStorageDirectory() + File.separator + "ComicDownload" + File.separator + downloadSubfolder, fileName + ".jpg");
         downloadManager.enqueue(request);
 
     }
@@ -83,5 +85,23 @@ public class Utils {
         return Uri.fromFile(destinationFile);
     }
 
+    public static boolean isNetworkConnected(Context context) {
+        ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+    }
+
+    public static boolean isInternetAvailable() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
 }

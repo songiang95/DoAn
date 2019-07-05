@@ -80,25 +80,28 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
         setContentView(R.layout.activity_main_comic);
         initNavigation();
         ButterKnife.bind(this);
-
+        activateToolbar();
         Fresco.initialize(this);
 
         //Activate toolbar
 
-        activateToolbar();
+        if (Utils.isNetworkConnected(this) && Utils.isInternetAvailable()) {
 
-        initSpinnerListener();
-        initLoadMoreListener();
-        mRefreshLayout.setProgressViewOffset(true, 0, Utils.dpToPx(80f));
-        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mPresenter.reLoad(MANGA_URL);
-            }
-        });
-        mPresenter = new Presenter();
-        mPresenter.attachView(this);
-        mPresenter.load(MANGA_URL);
+            initSpinnerListener();
+            initLoadMoreListener();
+            mRefreshLayout.setProgressViewOffset(true, 0, Utils.dpToPx(80f));
+            mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    mPresenter.reLoad(MANGA_URL);
+                }
+            });
+            mPresenter = new Presenter();
+            mPresenter.attachView(this);
+            mPresenter.load(MANGA_URL);
+        }else{
+            startActivity(new Intent(this,ComicDownloadedActivity.class));
+        }
 
     }
 

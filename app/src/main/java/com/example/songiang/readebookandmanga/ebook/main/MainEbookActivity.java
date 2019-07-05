@@ -84,13 +84,17 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
             Hawk.init(this).build();
         }
 
-        initSpinnerListener();
-        initLoadMoreListener();
-        mRefreshLayout.setOnRefreshListener(mRefreshListener);
-        mRefreshLayout.setProgressViewOffset(true, 0, Utils.dpToPx(80f));
-        mPresenter = new MainPresenter();
-        mPresenter.attachView(this);
-        mPresenter.load(EBOOK_URL);
+        if (Utils.isInternetAvailable() && Utils.isNetworkConnected(this)) {
+            initSpinnerListener();
+            initLoadMoreListener();
+            mRefreshLayout.setOnRefreshListener(mRefreshListener);
+            mRefreshLayout.setProgressViewOffset(true, 0, Utils.dpToPx(80f));
+            mPresenter = new MainPresenter();
+            mPresenter.attachView(this);
+            mPresenter.load(EBOOK_URL);
+        }else{
+            startActivity(new Intent(this,FavoriteEbookActivity.class));
+        }
     }
 
     @Override

@@ -39,12 +39,10 @@ dependencies {
     implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation 'com.jcminarro:RoundKornerLayouts:0.4.0'
-    implementation 'es.voghdev.pdfviewpager:library:1.0.6'
     implementation 'com.orhanobut:hawk:2.0.1'
     implementation "android.arch.persistence.room:runtime:$room_version"
     annotationProcessor "android.arch.persistence.room:compiler:$room_version"
     testImplementation "android.arch.persistence.room:testing:$room_version"
-    implementation 'com.artjimlop:altex-image-downloader:0.0.4'
     implementation 'com.mindorks.android:prdownloader:0.4.0'
     implementation 'gun0912.ted:tedpermission:2.2.2'
     implementation 'com.github.barteksc:android-pdf-viewer:3.1.0-beta.1'

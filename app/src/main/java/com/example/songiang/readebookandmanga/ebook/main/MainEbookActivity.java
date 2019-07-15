@@ -103,6 +103,11 @@ public class MainEbookActivity extends AppCompatActivity implements MainConstrac
         super.onResume();
     }
 
+    @Override
+    protected void onStop() {
+        mFrSearchBox.setVisibility(View.GONE);
+        super.onStop();
+    }
 
     @Override
     public void showContent(List<Ebook> data) {

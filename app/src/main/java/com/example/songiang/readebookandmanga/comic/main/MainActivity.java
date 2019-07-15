@@ -111,6 +111,12 @@ public class MainActivity extends BaseActivity implements MainContract.IView, Co
         super.onResume();
     }
 
+    @Override
+    protected void onStop() {
+        mFrSearchBox.setVisibility(View.GONE);
+        super.onStop();
+    }
+
     private void initLoadMoreListener() {
         mRecycleView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
